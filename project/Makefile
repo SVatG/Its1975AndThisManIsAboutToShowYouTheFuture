@@ -7,7 +7,7 @@ OBJS7 = Main.arm7.o
 
 # Libraries to link into the respective binaries
 LIBS = -L$(DEVKITPRO)/libnds/lib -lfat -lnds9 -lm
-LIBS7 = -L$(DEVKITPRO)/libnds/lib -lnds7 -lm
+LIBS7 = -L$(DEVKITPRO)/libnds/lib -lnds7 -lm 
 
 # Bitmaps, to be converted to .bin files by grit and then stored in the
 # nitrofs under /gfx.
@@ -23,10 +23,10 @@ CXX = $(DEVKITARM)/bin/arm-eabi-c++
 
 CFLAGS = -std=gnu99 -Os -mcpu=arm9e -mtune=arm9e \
 -mthumb -mthumb-interwork -I$(DEVKITPRO)/libnds/include -DARM9 $(DEFINES) \
--D__NITRO__ -DBINARY_NAME=\"$(NAME)\"
+-D__NITRO__ -DBINARY_NAME=\"$(NAME).nds\"
 CXXFLAGS = -Os -mcpu=arm9e -mtune=arm9e -mthumb -mthumb-interwork \
 -I$(DEVKITPRO)/libnds/include -DARM9 $(DEFINES) -D__NITRO__ \
--DBINARY_NAME=\"$(NAME)\"
+-DBINARY_NAME=\"$(NAME).nds\"
 CFLAGS7 = -std=gnu99 -Os -mcpu=arm7tdmi -mtune=arm7tdmi -mthumb \
 -mthumb-interwork -I$(DEVKITPRO)/libnds/include -DARM7 $(DEFINES)
 LDFLAGS = -specs=ds_arm9.specs -mthumb -mthumb-interwork -mno-fpu
