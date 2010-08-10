@@ -3,6 +3,7 @@
 
 #include <stdint.h>
 #include <stdbool.h>
+#include <stdio.h>
 
 typedef struct RangeEncoder
 {
@@ -11,10 +12,10 @@ typedef struct RangeEncoder
 	uint8_t cache;
 	uint32_t cachesize;
 
-	int fd;
+	FILE *fh;
 } RangeEncoder;
 
-void InitRangeEncoder(RangeEncoder *self,int fd);
+void InitRangeEncoder(RangeEncoder *self,FILE *fh);
 void WriteBitAndUpdateWeight(RangeEncoder *self,int bit,uint16_t *weight,int shift);
 void WriteBitString(RangeEncoder *self,uint32_t value,int length,uint16_t *weights,int shift);
 void WriteUniversalCode(RangeEncoder *self,uint32_t value,uint16_t *weights1,int shift1,uint16_t *weights2,int shift2);

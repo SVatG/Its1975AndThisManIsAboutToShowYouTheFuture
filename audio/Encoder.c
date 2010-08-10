@@ -1,7 +1,6 @@
 #include "AudioModel.h"
 #include "RangeEncoder.h"
 
-#include <unistd.h>
 #include <stdio.h>
 
 #define NumBits 10
@@ -16,7 +15,7 @@ static int SignExtend(int val,int bits)
 int main(int argc,char **argv)
 {
 	RangeEncoder coder;
-	InitRangeEncoder(&coder,1);
+	InitRangeEncoder(&coder,stdout);
 
 	AudioModel model;
 	InitAudioModel(&model);
@@ -27,7 +26,7 @@ int main(int argc,char **argv)
 	for(;;)
 	{
 		uint8_t bytes[2];
-		if(read(0,bytes,2)!=2) break;
+		if(fread(bytes,1,2,stdin)!=2) break;
 
 		int sample=SignExtend(bytes[0]|(bytes[1]<<8),16);
 		sample>>=16-NumBits;

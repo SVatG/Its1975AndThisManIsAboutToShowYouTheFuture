@@ -1,23 +1,22 @@
 #include "RangeEncoder.h"
 
 #include <math.h>
-#include <unistd.h>
 
 
 
 static inline void PutByte(RangeEncoder *self,uint8_t byte)
 {
-	write(self->fd,&byte,1);
+	fputc(byte,self->fh);
 }
 
-void InitRangeEncoder(RangeEncoder *self,int fd)
+void InitRangeEncoder(RangeEncoder *self,FILE *fh)
 {
 	self->range=0xffffffff;
 	self->low=0;
 	self->cache=0xff; // TODO: Is this right? Original has cache=0 and cachesize=1,
 	self->cachesize=0; // and output a useless 0 byte at the start.
 
-	self->fd=fd;
+	self->fh=fh;
 }
 
 static void ShiftOutputFromRangeEncoder(RangeEncoder *self)

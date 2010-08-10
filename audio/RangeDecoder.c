@@ -1,21 +1,17 @@
 #include "RangeDecoder.h"
 
-#include <unistd.h>
-
 
 
 static inline uint8_t GetByte(RangeDecoder *self)
 {
-	uint8_t byte;
-	read(self->fd,&byte,1);
-	return byte;
+	return fgetc(self->fh);
 }
 
-void InitRangeDecoder(RangeDecoder *self,int fd)
+void InitRangeDecoder(RangeDecoder *self,FILE *fh)
 {
 	self->range=0xffffffff;
 	self->code=0;
-	self->fd=fd;
+	self->fh=fh;
 
 	for(int i=0;i<4;i++) self->code=(self->code<<8)|GetByte(self);
 }
