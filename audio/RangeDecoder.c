@@ -42,6 +42,28 @@ int ReadBitAndUpdateWeight(RangeDecoder *self,uint16_t *weight,int shift)
 	}
 }
 
+uint32_t ReadBitString(RangeDecoder *self,int length,uint16_t *weights,int shift)
+{
+	uint32_t value=1;
+	for(int i=0;i<length;i++)
+	{
+		int bit=ReadBitAndUpdateWeight(self,&weights[value],shift);
+		value=(value<<1)|bit;
+	}
+	return value-(1<<length);
+}
+
+uint32_t ReadBitStringWithVariableWeights(RangeDecoder *self,int length,uint16_t *weights,int *shifts)
+{
+	uint32_t value=1;
+	for(int i=0;i<length;i++)
+	{
+		int bit=ReadBitAndUpdateWeight(self,&weights[value],shifts[i]);
+		value=(value<<1)|bit;
+	}
+	return value-(1<<length);
+}
+
 uint32_t ReadUniversalCode(RangeDecoder *self,uint16_t *weights1,int shift1,uint16_t *weights2,int shift2)
 {
 	int numbits=0;

@@ -1,8 +1,11 @@
 CFLAGS=-std=c99 -g -O3
 
-all: Encoder
+all: Encoder Decoder
 
 Encoder: Encoder.o RangeEncoder.o AudioModel.o
+	gcc -o $@ $^
+
+Decoder: Decoder.o RangeDecoder.o AudioModel.o
 	gcc -o $@ $^
 
 AudioModel.o: AudioModel.c AudioModel.h

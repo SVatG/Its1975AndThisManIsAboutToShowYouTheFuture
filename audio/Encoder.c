@@ -34,9 +34,13 @@ int main(int argc,char **argv)
 		int predicted=PredictNextSampleFromModel(&model);
 		UpdateModelForRealSampleValue(&model,predicted,sample);
 
+		int delta=predicted-sample;
+
 //		printf("%02x%02x %d %d %d\n",bytes[1],bytes[0],sample,predicted,sample-predicted);
-		WriteBitString(&coder,sample-predicted,NumBits,context,4);
+//		WriteBitString(&coder,delta,NumBits,context,6);
+		WriteBitStringWithVariableWeights(&coder,delta,
+		NumBits,context,(int[]){7,4,5,5,5,5,6,6,6,7});
 	}
 
-//	FinishRangeEncoder(&coder);
+	FinishRangeEncoder(&coder);
 }

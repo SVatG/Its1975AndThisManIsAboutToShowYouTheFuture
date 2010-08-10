@@ -18,6 +18,7 @@ typedef struct RangeEncoder
 void InitRangeEncoder(RangeEncoder *self,FILE *fh);
 void WriteBitAndUpdateWeight(RangeEncoder *self,int bit,uint16_t *weight,int shift);
 void WriteBitString(RangeEncoder *self,uint32_t value,int length,uint16_t *weights,int shift);
+void WriteBitStringWithVariableWeights(RangeEncoder *self,uint32_t value,int length,uint16_t *weights,int *shifts);
 void WriteUniversalCode(RangeEncoder *self,uint32_t value,uint16_t *weights1,int shift1,uint16_t *weights2,int shift2);
 void FinishRangeEncoder(RangeEncoder *self);
 

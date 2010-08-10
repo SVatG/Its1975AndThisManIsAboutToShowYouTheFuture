@@ -69,6 +69,16 @@ void WriteBitString(RangeEncoder *self,uint32_t value,int length,uint16_t *weigh
 	}
 }
 
+void WriteBitStringWithVariableWeights(RangeEncoder *self,uint32_t value,int length,uint16_t *weights,int *shifts)
+{
+	value&=(1<<length)-1;
+	for(int i=length-1;i>=0;i--)
+	{
+		int context=(value|(1<<length))>>(i+1);
+		WriteBitAndUpdateWeight(self,(value>>i)&1,&weights[context],shifts[length-1-i]);
+	}
+}
+
 void WriteUniversalCode(RangeEncoder *self,uint32_t value,uint16_t *weights1,int shift1,uint16_t *weights2,int shift2)
 {
 	int maxbit=31;
