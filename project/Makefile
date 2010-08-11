@@ -7,7 +7,7 @@ OBJS7 = Main.arm7.o
 
 # Libraries to link into the respective binaries
 LIBS = -L$(DEVKITPRO)/libnds/lib -lfat -lnds9 -lm
-LIBS7 = -L$(DEVKITPRO)/libnds/lib -lnds7 -lm 
+LIBS7 = -L$(DEVKITPRO)/libnds/lib -lnds7 -lm
 
 # Bitmaps, to be converted to .bin files by grit and then stored in the
 # nitrofs under /gfx.

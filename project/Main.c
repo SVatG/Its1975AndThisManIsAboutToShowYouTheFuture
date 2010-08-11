@@ -11,6 +11,8 @@
 // Effects!
 #include "effects.h"
 
+u8 soundBuffer[44100*2*40];
+
 int main()
 {	
 	// Turn on everything.
@@ -24,6 +26,23 @@ int main()
 	consoleDemoInit();
 	iprintf( "Debug mode.\n" );
 	#endif
+
+	loadData( "nitro:/zik/music_32.raw", soundBuffer, 44100*2*40 );
+	for( int i = 0; i < 44100*2*40; i+=2 ) {
+		soundBuffer[i] = soundBuffer[i] & 0xC0;
+	}
+	soundEnable();
+	soundPlaySample(
+		soundBuffer,
+		SoundFormat_16Bit,
+		44100*2*40,
+		32000,
+		127,
+		64,
+		false,
+		0
+	);
+	
 
 	// Main loop
 	u32 t = 0;

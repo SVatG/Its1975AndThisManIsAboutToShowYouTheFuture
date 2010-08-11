@@ -53,7 +53,7 @@ void effect1_init() {
 
 u8 effect1_update( u32 t ) {
 #ifdef DEBUG	
-	iprintf( "t = %d\n", t );
+// 	iprintf( "t = %d\n", t );
 #endif
 	return( 0 );
 }

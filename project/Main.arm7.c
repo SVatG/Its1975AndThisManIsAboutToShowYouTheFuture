@@ -32,7 +32,7 @@ extern "C" {
 #endif
 
 #include <nds.h>
-#include <dswifi7.h>
+// #include <dswifi7.h>
 
 //---------------------------------------------------------------------------------
 void VblankHandler(void) {

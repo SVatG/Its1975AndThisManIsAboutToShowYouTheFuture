@@ -101,7 +101,7 @@ void FinishRangeEncoder(RangeEncoder *self)
 
 
 
-double CalculateCostOfBit(int bit,uint16_t *weight,int shift,bool updateweight)
+/*double CalculateCostOfBit(int bit,uint16_t *weight,int shift,bool updateweight)
 {
 	double cost;
 	if(bit==0)
@@ -131,3 +131,4 @@ double CalculateCostOfUniversalCode(uint32_t value,uint16_t *weights1,int shift1
 
 	return cost;
 }
+*/
