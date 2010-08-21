@@ -63,7 +63,7 @@ uint32_t ReadBitString(RangeDecoder *self,int length,uint16_t *weights,int shift
 	return value-(1<<length);
 }
 
-uint32_t ReadBitStringWithVariableWeights(RangeDecoder *self,int length,uint16_t *weights,int *shifts)
+inline uint32_t ReadBitStringWithVariableWeights(RangeDecoder *self,int length,uint16_t *weights,int *shifts)
 {
 	uint32_t value=1;
 	for(int i=0;i<length;i++)

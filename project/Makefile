@@ -5,9 +5,13 @@ NAME = its1975andthismanisabouttoshowyouthefuture
 OBJS = Main.o DS3D.o Utils.o nitrofs.o effect1.o effect2.o
 OBJS7 = Main.arm7.o
 
+# WILT
+OBJS_WILT = ../audio/AudioModel.o ../audio/BlockDecoder.o ../audio/BlockRangeDecoder.o
+OBJS7 += $(OBJS_WILT)
+
 # Libraries to link into the respective binaries
 LIBS = -L$(DEVKITPRO)/libnds/lib -lfat -lnds9 -lm
-LIBS7 = -L$(DEVKITPRO)/libnds/lib -lnds7 -lm
+LIBS7 = -L$(DEVKITPRO)/libnds/lib -lnds7
 
 # Bitmaps, to be converted to .bin files by grit and then stored in the
 # nitrofs under /gfx.
@@ -21,16 +25,16 @@ AS = $(DEVKITARM)/bin/arm-eabi-as
 LD = $(DEVKITARM)/bin/arm-eabi-gcc
 CXX = $(DEVKITARM)/bin/arm-eabi-c++
 
-CFLAGS = -std=gnu99 -Os -mcpu=arm9e -mtune=arm9e \
+CFLAGS = -std=gnu99 -Os -mcpu=arm9e -mtune=arm9e -ffast-math \
 -mthumb -mthumb-interwork -I$(DEVKITPRO)/libnds/include -DARM9 $(DEFINES) \
 -D__NITRO__ -DBINARY_NAME=\"$(NAME).nds\"
 CXXFLAGS = -Os -mcpu=arm9e -mtune=arm9e -mthumb -mthumb-interwork \
 -I$(DEVKITPRO)/libnds/include -DARM9 $(DEFINES) -D__NITRO__ \
 -DBINARY_NAME=\"$(NAME).nds\"
-CFLAGS7 = -std=gnu99 -Os -mcpu=arm7tdmi -mtune=arm7tdmi -mthumb \
--mthumb-interwork -I$(DEVKITPRO)/libnds/include -DARM7 $(DEFINES)
+CFLAGS7 = -std=gnu99 -O3 -ffast-math -fomit-frame-pointer -mcpu=arm7tdmi \
+-mtune=arm7tdmi -mthumb -mthumb-interwork -I$(DEVKITPRO)/libnds/include -DARM7 $(DEFINES)
 LDFLAGS = -specs=ds_arm9.specs -mthumb -mthumb-interwork -mno-fpu
-LDFLAGS7 = -specs=./ds_arm7.specs -mthumb-interwork -mno-fpu
+LDFLAGS7 = -specs=./ds_arm7.specs -mthumb -mthumb-interwork -mno-fpu
 
 # Special rules for making png files into .bin files.
 # Grit currently appends .img.bin, breaking this a little.
@@ -61,6 +65,13 @@ $(NAME).arm7.elf: $(OBJS7)
 	$(LD) $(LDFLAGS7) -o $@ $(OBJS7) $(LIBS7)
 Main.arm7.o: Main.arm7.c
 	$(CC) $(CFLAGS7) -c -o $@ $<
+../audio/AudioModel.o: ../audio/AudioModel.c
+	$(CC) $(CFLAGS7) -c -o $@ $<
+../audio/BlockDecoder.o: ../audio/BlockDecoder.c
+	$(CC) $(CFLAGS7) -c -o $@ $<
+../audio/BlockRangeDecoder.o: ../audio/BlockRangeDecoder.c
+	$(CC) $(CFLAGS7) -c -o $@ $<
+	
 Main.o: Main.c $(BITMAPS)
 
 # To clean, delete all binary objects and converted images

@@ -6,12 +6,12 @@
 #define NumContexts (1<<(NumBits+1))
 #define BitMask ((1<<NumBits)-1)
 
-static int SignExtend(int val,int bits)
+static inline int SignExtend(int val,int bits)
 {
 	return val|~((val&(1<<bits-1))-1);
 }
 
-RangeDecoder coder;
+static RangeDecoder coder;
 AudioModel model;
 uint16_t context[NumContexts];
 
@@ -21,7 +21,7 @@ void initDecoder(void (*bufferFillCallback)(uint8_t*, uint32_t)) {
 	for(int i=0;i<NumContexts;i++) context[i]=0x800;
 }
 
-void getBlock(uint16_t* samples, int size) {
+void getBlock(int16_t* samples, int size) {
 	for(int i = 0; i < size; i++) {
 		int predicted=PredictNextSampleFromModel(&model);
 		int delta=ReadBitStringWithVariableWeights(&coder,

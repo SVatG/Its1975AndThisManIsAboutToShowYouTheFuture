@@ -11,10 +11,26 @@
 // Effects!
 #include "effects.h"
 
-u8 soundBuffer[44100*2*40];
+#include <nds/arm9/sound.h>
+#include <nds/fifocommon.h>
+#include <nds/fifomessages.h>
+
+int soundFd;
+u16* soundBuffer[4096];
+void fillSoundBuffer(int bytes, void* user_data){
+	FifoMessage msg;
+	fifoGetDatamsg(FIFO_SOUND, bytes, (u8*)&msg);
+	if(msg.type == 777) {
+		iprintf( "Lol %x %d\n", msg.MicBufferFull.buffer, msg.MicBufferFull.length );
+		read( soundFd, msg.MicBufferFull.buffer, msg.MicBufferFull.length );
+// 		DC_InvalidateRange(soundBuffer, msg.MicBufferFull.length);
+// 		DC_InvalidateRange(msg.MicBufferFull.buffer, msg.MicBufferFull.length);		
+// 		dmaCopy(soundBuffer, msg.MicBufferFull.buffer, msg.MicBufferFull.length);
+	}
+}
 
 int main()
-{	
+{
 	// Turn on everything.
 	POWCNT1 = POWCNT1_ALL;
 	irqEnable( IRQ_VBLANK );
@@ -27,22 +43,10 @@ int main()
 	iprintf( "Debug mode.\n" );
 	#endif
 
-	loadData( "nitro:/zik/music_32.raw", soundBuffer, 44100*2*40 );
-	for( int i = 0; i < 44100*2*40; i+=2 ) {
-		soundBuffer[i] = soundBuffer[i] & 0xC0;
-	}
+	// Start the music.
+	soundFd = open( "nitro:/zik/music_32.wilt", O_RDONLY | O_BINARY );
 	soundEnable();
-	soundPlaySample(
-		soundBuffer,
-		SoundFormat_16Bit,
-		44100*2*40,
-		32000,
-		127,
-		64,
-		false,
-		0
-	);
-	
+	fifoSetDatamsgHandler( FIFO_SOUND, fillSoundBuffer, 0 );
 
 	// Main loop
 	u32 t = 0;

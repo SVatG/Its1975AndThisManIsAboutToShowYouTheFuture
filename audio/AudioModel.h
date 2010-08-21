@@ -1,13 +1,11 @@
 #ifndef __AUDIOMODEL_H__
 #define __AUDIOMODEL_H__
 
-#define MAX_ORDER 3
-
 typedef struct AudioModel
 {
-	int weight[MAX_ORDER+1];
-	int delta[MAX_ORDER+1];
-	int error[MAX_ORDER*2+3];
+	int weight1,weight2,weight3,weight4,weight5;
+	int delta1,delta2,delta3,delta4;
+	int error[7];
 	int count;
 	int lastsample;
 } AudioModel;

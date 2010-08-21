@@ -2,7 +2,6 @@
 
 #include <stdint.h>
 #include <string.h>
-#include <stdio.h>
 
 static inline int iabs(int x) { return x<0?-x:x; }
 
@@ -11,31 +10,41 @@ void InitAudioModel(AudioModel *self)
 	memset(self,0,sizeof(*self));
 }
 
-int PredictNextSampleFromModel(AudioModel *self)
+inline int PredictNextSampleFromModel(AudioModel *self)
 {
-	int prediction = 8*self->lastsample;
-	for( int i = 0; i <= MAX_ORDER; i++ ) {
-		prediction += self->weight[i]*self->delta[i];
-	}
-	return( prediction>>3 );
+	return (
+		8*self->lastsample+
+		self->weight1*self->delta1+
+		self->weight2*self->delta2+
+		self->weight3*self->delta3
+	)>>3;
 }
 
-void UpdateModelForRealSampleValue(AudioModel *self,int predicted,int sample)
+inline void UpdateModelForRealSampleValue(AudioModel *self,int predicted,int sample)
 {
 //	int sample=predicted-delta&BitMask;
 
 	int prederror=predicted-sample<<3;
 	self->error[0]+=iabs(prederror);
-	for( int i = 0; i <= MAX_ORDER; i++ ) {
-		self->error[2*i+1]+=iabs(prederror-self->delta[i]);
-		self->error[2*i+2]+=iabs(prederror+self->delta[i]);
-	}
-	
+	self->error[1]+=iabs(prederror-self->delta1);
+	self->error[2]+=iabs(prederror+self->delta1);
+	self->error[3]+=iabs(prederror-self->delta2);
+	self->error[4]+=iabs(prederror+self->delta2);
+	self->error[5]+=iabs(prederror-self->delta3);
+	self->error[6]+=iabs(prederror+self->delta3);
+
+	int lastdelta=sample-self->lastsample;
+	self->delta3=self->delta2;
+	self->delta2=lastdelta-self->delta1;
+	self->delta1=lastdelta;
+
+	self->lastsample=sample;
+
 	if((self->count&0x1f)==0)
 	{
-		int minindex=0;
 		int minerror=self->error[0];
-		for(int i=1;i<=(MAX_ORDER*2+2);i++)
+		int minindex=0;
+		for(int i=1;i<7;i++)
 		{
 			if(self->error[i]<minerror)
 			{
@@ -44,29 +53,18 @@ void UpdateModelForRealSampleValue(AudioModel *self,int predicted,int sample)
 			}
 		}
 
-		if( minindex != 0 ) {
-			if( minindex%2 != 0 ) {
-				if( self->weight[(minindex-1)/2] >= -32 ) {
-					self->weight[(minindex-1)/2]--;
-				}
-			}
-			else {
-				if( self->weight[(minindex-1)/2] < 32 ) {
-					self->weight[(minindex-1)/2]++;
-				}
-			}
-		}
 		memset(self->error,0,sizeof(self->error));
-	}
 
-	int lastdelta=sample-self->lastsample;
-	for( int i = MAX_ORDER; i > 1; i-- ) {
-		self->delta[i]=self->delta[i-2]-self->delta[i-1];
+		switch(minindex)
+		{
+			case 1: if(self->weight1>=-16) self->weight1--; break;
+			case 2: if(self->weight1<16) self->weight1++; break;
+			case 3: if(self->weight2>=-16) self->weight2--; break;
+			case 4: if(self->weight2<16) self->weight2++; break;
+			case 5: if(self->weight3>=-16) self->weight3--; break;
+			case 6: if(self->weight3<16) self->weight3++; break;
+		}
 	}
-	self->delta[1]=lastdelta-self->delta[0];
-	self->delta[0]=lastdelta;
-
-	self->lastsample=sample;
 
 	self->count++;
 }
