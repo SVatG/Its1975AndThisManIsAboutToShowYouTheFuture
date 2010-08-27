@@ -100,7 +100,7 @@ void FinishRangeEncoder(RangeEncoder *self)
 
 
 
-
+/*
 /*double CalculateCostOfBit(int bit,uint16_t *weight,int shift,bool updateweight)
 {
 	double cost;
