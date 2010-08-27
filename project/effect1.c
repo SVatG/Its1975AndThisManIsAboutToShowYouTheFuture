@@ -79,12 +79,12 @@ void effect1_init() {
 	load8bVRAMIndirect( "nitro:/gfx/hand.img.bin", sub_hand, 256*192 );
 	loadVRAMIndirect( "nitro:/gfx/useful.pal.bin", PALRAM_B, 256 * 2 );
 
-	DISPCNT_A = DISPCNT_MODE_5 | DISPCNT_BG3_ON | DISPCNT_ON;
+	DISPCNT_A = DISPCNT_MODE_5  | DISPCNT_BG2_ON | DISPCNT_BG3_ON | DISPCNT_ON;
 	VRAMCNT_A = VRAMCNT_A_BG_VRAM_A_OFFS_0K;
 	VRAMCNT_B = VRAMCNT_B_BG_VRAM_A_OFFS_128K;
 	
 	BG3CNT_A = BGxCNT_EXTENDED_BITMAP_16 | BGxCNT_BITMAP_SIZE_256x256 | BGxCNT_OVERFLOW_WRAP | BGxCNT_BITMAP_BASE_0K;
-	BG3CNT_A = (BG3CNT_B&~BGxCNT_PRIORITY_MASK)|BGxCNT_PRIORITY_0;
+	BG3CNT_A = (BG3CNT_A&~BGxCNT_PRIORITY_MASK)|BGxCNT_PRIORITY_1;
 	BG3PA_A = (1 << 8);
 	BG3PB_A = 0;
 	BG3PC_A = 0;
@@ -92,25 +92,91 @@ void effect1_init() {
 	BG3X_A = 0;
 	BG3Y_A = 0;
 
-	BG2CNT_A = BGxCNT_EXTENDED_BITMAP_16 | BGxCNT_BITMAP_SIZE_256x256 | BGxCNT_OVERFLOW_WRAP | BGxCNT_BITMAP_BASE_0K;
-	BG2CNT_A = (BG3CNT_B&~BGxCNT_PRIORITY_MASK)|BGxCNT_PRIORITY_0;
-	BG2PA_A = (1 << 8);
-	BG2PB_A = 0;
-	BG2PC_A = 0;
-	BG2PD_A = (1 << 8);
+	BG2CNT_A = BGxCNT_EXTENDED_BITMAP_16 | BGxCNT_BITMAP_SIZE_256x256 | BGxCNT_OVERFLOW_TRANSPARENT | BGxCNT_BITMAP_BASE_128K;
+	BG2CNT_A = (BG2CNT_A&~BGxCNT_PRIORITY_MASK)|BGxCNT_PRIORITY_0;
+	BG2PA_A = icos(600)>>4;
+	BG2PB_A = isin(600)>>4;
+	BG2PC_A = -isin(600)>>4;
+	BG2PD_A = icos(600)>>4;
 	BG2X_A = 0;
 	BG2Y_A = 0;
 
 	u16* bg = (u16*)VRAM_A_OFFS_0K;
 	for( int x = 0; x < 256; x++ ) {
 		for( int y = 0; y < 256; y++ ) {
-			if( y%16 == 0 ) {
-				bg[y*256+x] = RGB15(15,15,15) | BIT(15);
-			}
-			else {
+			if( y%16 == 0 || (y+1)%16 == 0  ) {
 				bg[y*256+x] = RGB15(0,0,0) | BIT(15);
 			}
+			else {
+				bg[y*256+x] = RGB15(28,28,28) | BIT(15);
+			}
 		}
+	}
+}
+
+int arra_m = 2;
+int arrb_m = -2;
+int arrc_m = 2;
+int arra_s = 0;
+int arrb_s = 160;
+int arrc_s = 100;
+
+void drawbars() {
+	u16* bg = (u16*)(VRAM_A_OFFS_0K+0x10000);
+
+	arra_s += arra_m;
+	arrb_s += arrb_m;
+	arrc_s += arrc_m;
+
+	if( arra_m == 2 ) {
+		if( arra_s > 128 + Random()%128 ) {
+			arra_m = -2;
+		}
+	}
+	else {
+		if( arra_s < 128 - Random()%128 ) {
+			arra_m = 2;
+		}
+	}
+
+	if( arrb_m == 2 ) {
+		if( arrb_s > 128 + Random()%128 ) {
+			arrb_m = -2;
+		}
+	}
+	else {
+		if( arrb_s < 128 - Random()%128 ) {
+			arrb_m = 2;
+		}
+	}
+
+	if( arrc_m == 2 ) {
+		if( arrc_s > 128 + Random()%128 ) {
+			arrc_m = -2;
+		}
+	}
+	else {
+		if( arrc_s < 128 - Random()%128 ) {
+			arrc_m = 2;
+		}
+	}
+
+	for( int x = 0; x < 256; x++ ) {
+		if( x > arra_s && x < arra_s + 20 ) {
+			bg[x] = RGB15(31,0,0) | BIT(15);
+		}
+		else if( x > arrb_s && x < arrb_s + 20 ) {
+			bg[x] = RGB15(0,0,31) | BIT(15);
+		}
+		else if( x > arrc_s && x < arrc_s + 20 ) {
+			bg[x] = RGB15(31,21,0) | BIT(15);
+		} else {
+			bg[x] = ~BIT(15);
+		}
+	}
+
+	for( int y = 192; y > 0; y-- ) {
+		dmaCopy( &bg[(y-1)*256], &bg[y*256], 512 );
 	}
 }
 
@@ -118,6 +184,9 @@ u8 effect1_update( u32 t ) {
 	BG3X_B = isin((t*20)<<3);
 	BG3Y_B = isin((t*20))-4096;
 	BG3Y_A = -t*800;
+
+	drawbars();
+	drawbars();	
 	
 	swiWaitForVBlank();
 	return( 0 );
