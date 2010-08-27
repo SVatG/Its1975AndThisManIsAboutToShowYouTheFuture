@@ -1,0 +1,10 @@
+\.o$
+\.bin$
+\.nds$
+\.arm7
+\.arm9
+gfx/.*\.h$
+^audio/Decoder$
+^audio/Encoder$
+^audio/10BitCompare$
+

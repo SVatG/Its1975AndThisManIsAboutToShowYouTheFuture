@@ -30,7 +30,7 @@ CXXFLAGS = -Os -mcpu=arm9e -mtune=arm9e -mthumb -mthumb-interwork \
 CFLAGS7 = -std=gnu99 -O3 -ffast-math -fomit-frame-pointer -mcpu=arm7tdmi \
 -mtune=arm7tdmi -mthumb -mthumb-interwork -I$(DEVKITPRO)/libnds/include -DARM7 $(DEFINES)
 LDFLAGS = -specs=ds_arm9.specs -mthumb -mthumb-interwork -mno-fpu
-LDFLAGS7 = -specs=./ds_arm7.specs -mthumb -mthumb-interwork -mno-fpu
+LDFLAGS7 = -specs=./ds_arm7_.specs -mthumb -mthumb-interwork -mno-fpu
 
 # Special rules for making png files into .bin files.
 # Grit currently appends .img.bin, breaking this a little.
