@@ -221,17 +221,12 @@ void loadImage(char* path, u16* buffer, u32 size) {
 	}
 }
 
-// Load a single 16bit image into VRAM at a specified position by first loading
+// Load data into VRAM at a specified position by first loading
 // it into main memory and them DMA'ing it to VRAM.
 void loadVRAMIndirect(char* path, u16* vramPos, s32 size) {
 	int fd = open( path, O_RDONLY );
 	read( fd, tempImage, size );
 	close( fd );
-
-	// Ensure alpha bit is set
-	for( int i = 0; i < size; i++ ) {
-		tempImage[i] |= BIT(15);
-	}
 
  	dmaCopy( tempImage, vramPos, size );
 }

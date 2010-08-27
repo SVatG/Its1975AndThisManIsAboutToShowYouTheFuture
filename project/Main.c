@@ -11,24 +11,6 @@
 // Effects!
 #include "effects.h"
 
-#include <nds/arm9/sound.h>
-#include <nds/fifocommon.h>
-#include <nds/fifomessages.h>
-
-int soundFd;
-u16* soundBuffer[4096];
-void fillSoundBuffer(int bytes, void* user_data){
-	FifoMessage msg;
-	fifoGetDatamsg(FIFO_SOUND, bytes, (u8*)&msg);
-	if(msg.type == 777) {
-		iprintf( "Lol %x %d\n", msg.MicBufferFull.buffer, msg.MicBufferFull.length );
-		read( soundFd, msg.MicBufferFull.buffer, msg.MicBufferFull.length );
-// 		DC_InvalidateRange(soundBuffer, msg.MicBufferFull.length);
-// 		DC_InvalidateRange(msg.MicBufferFull.buffer, msg.MicBufferFull.length);		
-// 		dmaCopy(soundBuffer, msg.MicBufferFull.buffer, msg.MicBufferFull.length);
-	}
-}
-
 int main()
 {
 	// Turn on everything.
@@ -42,11 +24,6 @@ int main()
 	consoleDemoInit();
 	iprintf( "Debug mode.\n" );
 	#endif
-
-	// Start the music.
-	soundFd = open( "nitro:/zik/music_32.wilt", O_RDONLY | O_BINARY );
-	soundEnable();
-	fifoSetDatamsgHandler( FIFO_SOUND, fillSoundBuffer, 0 );
 
 	// Main loop
 	u32 t = 0;

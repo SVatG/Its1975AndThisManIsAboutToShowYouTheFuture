@@ -3,7 +3,7 @@
 
 // Debug mode on/off
 // Remember to make clean when you switch.
-#define DEBUG
+// #define DEBUG
 
 // General-purpose includes
 #include <nds.h>

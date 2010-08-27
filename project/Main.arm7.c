@@ -34,7 +34,6 @@ extern "C" {
 #include <nds.h>
 // #include <dswifi7.h>
 #include "../audio/BlockDecoder.h"
-#include <nds/arm7/audio.h>
 #include <nds/fifocommon.h>
 #include <nds/fifomessages.h>
 
@@ -59,17 +58,6 @@ void powerButtonHandler() {
 	exitflag = true;
 }
 
-// Wilt buffer fill code.
-void fillSoundBuffer(uint8_t* buffer, uint32_t size) {
-// 	send "more data" request over fifo.
-	FifoMessage msg;
-	msg.type = 777; // This is now our magic number.
-	msg.MicBufferFull.buffer = (void*)buffer; // Abusing these
-	msg.MicBufferFull.length = (u32)size;
-
-	fifoSendDatamsg(FIFO_SOUND, sizeof(msg) , (u8*)&msg);
-}
-
 u8* soundBuffer[6400];
 int main() {
 	readUserSettings();
@@ -83,8 +71,7 @@ int main() {
 	SetYtrigger(80);
 
 // 	installWifiFIFO();
- 	installSoundFIFO();
-	
+ 	installSoundFIFO();	
 	installSystemFIFO();
 
 	irqSet(IRQ_VCOUNT, VcountHandler);
@@ -94,30 +81,9 @@ int main() {
 
 	irqEnable( IRQ_VBLANK | IRQ_VCOUNT | IRQ_NETWORK);
 
-	// Keep the ARM7 decoding.
-	int sbCount = 3;
-	int bufpos = 0;
-	powerOn(POWER_SOUND);
-	writePowerManagement(PM_CONTROL_REG, ( readPowerManagement(PM_CONTROL_REG) & ~PM_SOUND_MUTE ) | PM_SOUND_AMP );
-	REG_SOUNDCNT = SOUND_ENABLE;
-	REG_MASTER_VOLUME = 127;
-	initDecoder(&fillSoundBuffer);
 	while (!exitflag) {
 		if ( 0 == (REG_KEYINPUT & (KEY_SELECT | KEY_START | KEY_L | KEY_R))) {
 			exitflag = true;
-		}
-		if( sbCount < 2 ) {
-			sbCount++;
-		} else {
-			SCHANNEL_SOURCE(0) = (u32)(soundBuffer+bufpos);
-			SCHANNEL_REPEAT_POINT(0) = 0;
-			SCHANNEL_LENGTH(0) = 3200;
-			SCHANNEL_TIMER(0) = SOUND_FREQ(32000);
-			SCHANNEL_CR(0) = SCHANNEL_ENABLE | SOUND_VOL(127) | SOUND_PAN(64) | (1 << 29) | SOUND_ONE_SHOT;
-			
-			bufpos = (bufpos + 3200)%6400;
-			getBlock(soundBuffer+bufpos,6400);
-			sbCount = 0;
 		}
 		swiWaitForVBlank();
 	}

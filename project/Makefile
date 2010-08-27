@@ -5,10 +5,6 @@ NAME = its1975andthismanisabouttoshowyouthefuture
 OBJS = Main.o DS3D.o Utils.o nitrofs.o effect1.o effect2.o
 OBJS7 = Main.arm7.o
 
-# WILT
-OBJS_WILT = ../audio/AudioModel.o ../audio/BlockDecoder.o ../audio/BlockRangeDecoder.o
-OBJS7 += $(OBJS_WILT)
-
 # Libraries to link into the respective binaries
 LIBS = -L$(DEVKITPRO)/libnds/lib -lfat -lnds9 -lm
 LIBS7 = -L$(DEVKITPRO)/libnds/lib -lnds7
@@ -17,7 +13,7 @@ LIBS7 = -L$(DEVKITPRO)/libnds/lib -lnds7
 # nitrofs under /gfx.
 # This needs work so that the images are not remade every time the binary is
 # compiled.
-BITMAPS = gfx/online.bin
+BITMAPS = gfx/online.bin gfx/hand.bin gfx/useful.bin
 
 # Compiler setup
 CC = $(DEVKITARM)/bin/arm-eabi-gcc
@@ -40,7 +36,7 @@ LDFLAGS7 = -specs=./ds_arm7.specs -mthumb -mthumb-interwork -mno-fpu
 # Grit currently appends .img.bin, breaking this a little.
 .SUFFIXES: .bin .png
 .png.bin :
-	$(DEVKITARM)/bin/grit $< -p! -ftb -o$<
+	$(DEVKITARM)/bin/grit $< -ftb -o$<
 
 # Rules for the final binary
 # Builds an NDS binary with a nitrofs file system with the files from /Datafiles
