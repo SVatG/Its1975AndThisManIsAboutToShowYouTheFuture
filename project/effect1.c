@@ -257,7 +257,7 @@ u8 effect1_update( u32 t ) {
 	drawbars();
 	drawbars();	
 
-	if( t == 720 ) {
+	if( t == 730 ) {
 		return 1;
 	}
 

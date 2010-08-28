@@ -226,7 +226,7 @@ u8 effect5_update( u32 t ) {
 		memset( master_bright, (1<<6) | 16-(t/2), 2 );
 	}
 
-	if( t == 300 ) {
+	if( t == 260 ) {
 		return( 1 );
 	}
 	
