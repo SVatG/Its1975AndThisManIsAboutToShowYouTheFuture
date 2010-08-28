@@ -3,16 +3,12 @@
 
 static int flip;
 static uint32_t whitetexture;
-static bool fadingout;
-static int fadestart;
 
 void effect2_init() {
 	VRAMCNT_C=VRAMCNT_C_LCDC;
 
-//	load8bVRAMIndirect( "nitro:/gfx/bolder1.img.bin",VRAM_LCDC_C,256*192*2);
-//	loadVRAMIndirect( "nitro:/gfx/bolder1.pal.bin", PALRAM_A,256*2);
-for(int i=0;i<256*192;i++) VRAM_LCDC_C[i]=Random();
-for(int i=0;i<256;i++) PALRAM_A[i]=Random();
+	load8bVRAMIndirect( "nitro:/gfx/bolder1.img.bin",VRAM_LCDC_C,256*192*2);
+	loadVRAMIndirect( "nitro:/gfx/bolder1.pal.bin", PALRAM_A,256*2);
 
 	VRAMCNT_A=VRAMCNT_A_LCDC;
 	VRAMCNT_B=VRAMCNT_B_LCDC;
@@ -21,17 +17,14 @@ for(int i=0;i<256;i++) PALRAM_A[i]=Random();
 
 	DISPCNT_A=DISPCNT_MODE_4|DISPCNT_3D|DISPCNT_BG0_ON|DISPCNT_BG3_ON|DISPCNT_ON;
 	BG0CNT_A=BGxCNT_PRIORITY_2;
-	BG3CNT_A=BGxCNT_BITMAP_BASE_0K|BGxCNT_EXTENDED_BITMAP_16
-			|BGxCNT_BITMAP_SIZE_256x256|BGxCNT_PRIORITY_1; // RGB bitmap mode
+	BG3CNT_A=BGxCNT_BITMAP_BASE_0K|BGxCNT_EXTENDED_BITMAP_8
+			|BGxCNT_BITMAP_SIZE_256x256|BGxCNT_PRIORITY_1;
 	BG3PA_A=0x100;
 	BG3PB_A=0;
 	BG3PC_A=0;
 	BG3PD_A=0x100;
 	BG3HOFS_A=0;
 	BG3VOFS_A=0;
-
-for(int i=0;i<256*192;i++) VRAM_A[i]=Random();
-for(int i=0;i<256;i++) PALRAM_A[i]=Random();
 
 	DSInit3D();
 	DSViewport(0,0,255,191);
@@ -45,12 +38,13 @@ for(int i=0;i<256;i++) PALRAM_A[i]=Random();
 		VRAM_LCDC_B[i]=0x8000;
 	}
 
-	DSCopyColorTexture(DS_TEX_ADDRESS(VRAM_LCDC_A+256*204),0x7fff);
-	DSCopyColorTexture(DS_TEX_ADDRESS(VRAM_LCDC_B+256*204),0x7fff);
+//	DSCopyColorTexture(DS_TEX_ADDRESS(VRAM_LCDC_A+256*204),0x7fff);
+//	DSCopyColorTexture(DS_TEX_ADDRESS(VRAM_LCDC_B+256*204),0x7fff);
+memset(VRAM_LCDC_A+256*204,0xff,8*8*2);
+memset(VRAM_LCDC_B+256*204,0xff,8*8*2);
 	whitetexture=DS_TEX_ADDRESS(VRAM_LCDC_A+256*204);
 
 	flip=0;
-	fadingout=false;
 	//whitetexture=DSMakeWhiteTexture();
 //DSTranslatef32(128,96,0);
 //DSScalef(100.0/4096,100.0/4096,1);
@@ -59,13 +53,14 @@ for(int i=0;i<256;i++) PALRAM_A[i]=Random();
 u8 effect2_update( u32 t ) {
 	int capsrc;
 
-	uint16_t *ptr;
+/*	uint16_t *ptr;
 	if(flip) ptr=VRAM_LCDC_A;
 	else ptr=VRAM_LCDC_B;
 	for(int i=0;i<256*10;i++)
 	{
 		ptr[256*192+i]=ptr[256*191+i];
-	}
+	}*/
+//	DISPCNT_A=DISPCNT_MODE_4|DISPCNT_3D|DISPCNT_BG0_ON|DISPCNT_BG3_ON|DISPCNT_ON;
 
 	capsrc=DISPCAPCNT_SRC_A_3D;
 
