@@ -129,6 +129,9 @@ void RenderCube(int t)
 }
 
 void effect3_init() {
+	u16* master_bright = (u16*)(0x400006C);
+	memset( master_bright, (1<<6) | 16, 2 );
+	
 	irqSet( IRQ_HBLANK, hblank2 );
 	irqEnable( IRQ_HBLANK );
 	
@@ -243,6 +246,16 @@ u8 effect3_update( u32 t ) {
 
 	if( t == 720 ) {
 		return( 1 );
+	}
+
+	if( t <= 16 ) {
+		u16* master_bright = (u16*)(0x400006C);
+		memset( master_bright, (1<<6) | (16-t), 2 );
+	}
+
+	if( t >= 704 ) {
+		u16* master_bright = (u16*)(0x400006C);
+		memset( master_bright, (1<<6) | (t-704), 2 );
 	}
 	
 	return( 0 );

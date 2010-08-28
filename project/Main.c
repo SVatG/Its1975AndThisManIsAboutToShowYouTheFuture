@@ -36,10 +36,10 @@ int main()
 	// Main loop
 	u32 t = 0;
 	u32 t_switch = 0;
-	u8 effect = 7;
+	u8 effect = 0;
 	u8 result = 0;
-	effect7_init();
-	effect7_update( t );
+	effect0_init();
+	effect0_update( t );
 
 	while( 1 ) {
 		t++;
@@ -51,9 +51,9 @@ int main()
 				if( result != 0 ) {
 					t = 0;
 					effect++;
-					effect0_destroy();
 					effect1_init();
 					effect1_update( t );
+					effect0_destroy();
 				}
 			break;
 

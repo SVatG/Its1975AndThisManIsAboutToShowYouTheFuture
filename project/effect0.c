@@ -88,7 +88,7 @@ u8 effect0_update( u32 t ) {
 	if( t > 0 ) {
 		text = 0;
 	}
-	if( t > 53 ) {
+	if( t > 40 ) {
 		text = 1;
 	}
 	if( t > 180 ) {
@@ -100,10 +100,10 @@ u8 effect0_update( u32 t ) {
 	if( t > 240 ) {
 		text = 4;
 	}
-	if( t > 300 ) {
+	if( t > 290 ) {
 		text = 5;
 	}
-	if( t > 400 ) {
+	if( t > 370 ) {
 		text = 6;
 	}
 	if( text != prevtext ) {
@@ -120,7 +120,7 @@ u8 effect0_update( u32 t ) {
 		BLEND_Y = (310 - t)/10;
 	}
 
-	if( t == 400 ) {
+	if( t == 370 ) {
 		load8bVRAMIndirect( "nitro:/gfx/thismanb.img.bin",VRAM_A,256*192);
 		loadVRAMIndirect( "nitro:/gfx/thismanb.pal.bin", PALRAM_A,256*2);
 	}

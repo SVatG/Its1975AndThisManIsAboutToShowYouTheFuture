@@ -51,6 +51,11 @@ u16* arr_a;
 u16* arr_b;
 u16* arr_c;
 void effect1_init() {
+	u16* master_bright_sub = (u16*)(0x400106C);
+	u16* master_bright = (u16*)(0x400006C);
+	memset( master_bright, (1<<7) | 16, 2 );
+	memset( master_bright_sub, (1<<7) | 16, 2 );
+	
 	irqSet( IRQ_HBLANK, hblank );
 	irqEnable( IRQ_HBLANK );
 	
@@ -255,6 +260,14 @@ u8 effect1_update( u32 t ) {
 	if( t == 710 ) {
 		return 1;
 	}
+
+	if( t == 2 ) {
+		u16* master_bright_sub = (u16*)(0x400106C);
+		u16* master_bright = (u16*)(0x400006C);
+		memset( master_bright, (1<<6) | 0, 2 );
+		memset( master_bright_sub, (1<<6) | 0, 2 );
+	}
+	
 	return( 0 );
 }
 
