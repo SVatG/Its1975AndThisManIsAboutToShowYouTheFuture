@@ -7,4 +7,4 @@ gfx/.*\.h$
 ^audio/Decoder$
 ^audio/Encoder$
 ^audio/10BitCompare$
-
+\.DS_Store$

@@ -13,8 +13,7 @@ LIBS7 = -L$(DEVKITPRO)/libnds/lib -lnds7
 # nitrofs under /gfx.
 # This needs work so that the images are not remade every time the binary is
 # compiled.
-BITMAPS = gfx/online.bin gfx/hand.bin gfx/useful.bin gfx/labels_l.bin gfx/labels_r.bin gfx/arrow_a.bin gfx/arrow_b.bin gfx/arrow_c.bin
-
+BITMAPS = gfx/online.bin gfx/hand.bin gfx/useful.bin gfx/bolder1.bin gfx/bolder2.bin gfx/bolder3.bin gfx/bolder4.bin gfx/labels_l.bin gfx/labels_r.bin gfx/arrow_a.bin gfx/arrow_b.bin gfx/arrow_c.bin
 # Compiler setup
 CC = $(DEVKITARM)/bin/arm-eabi-gcc
 AS = $(DEVKITARM)/bin/arm-eabi-as
