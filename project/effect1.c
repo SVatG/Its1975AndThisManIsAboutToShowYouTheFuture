@@ -79,8 +79,8 @@ void effect1_init() {
 	load8bVRAMIndirect( "nitro:/gfx/hand.img.bin", sub_hand, 256*192 );
 	loadVRAMIndirect( "nitro:/gfx/useful.pal.bin", PALRAM_B, 256 * 2 );
 
-	DISPCNT_A = DISPCNT_MODE_5  | DISPCNT_BG2_ON | DISPCNT_BG3_ON | DISPCNT_ON;
-	VRAMCNT_A = VRAMCNT_A_BG_VRAM_A_OFFS_0K;
+	DISPCNT_A = DISPCNT_MODE_5  | DISPCNT_BG2_ON | DISPCNT_BG3_ON | DISPCNT_OBJ_ON | DISPCNT_ON;
+	VRAMCNT_D = VRAMCNT_D_BG_VRAM_A_OFFS_0K;
 	VRAMCNT_B = VRAMCNT_B_BG_VRAM_A_OFFS_128K;
 	
 	BG3CNT_A = BGxCNT_EXTENDED_BITMAP_16 | BGxCNT_BITMAP_SIZE_256x256 | BGxCNT_OVERFLOW_WRAP | BGxCNT_BITMAP_BASE_0K;
@@ -112,6 +112,34 @@ void effect1_init() {
 			}
 		}
 	}
+
+	VRAMCNT_A = VRAMCNT_A_OBJ_VRAM_A;
+
+	oamInit(&oamMain, SpriteMapping_1D_128, false);
+	loadVRAMIndirect("nitro:/gfx/labels_l.pal.bin", SPRITE_PALETTE, 512);
+	u16* labels_l = loadSpriteA( "nitro:/gfx/labels_l.img.bin" );
+	u16* labels_r = loadSpriteA( "nitro:/gfx/labels_r.img.bin" );
+	
+	oamSet(
+		&oamMain, 1,
+		121, 10,
+		1, 0,
+		SpriteSize_64x64,
+		SpriteColorFormat_256Color,
+		labels_l,
+		-1, false, false, false, false, false
+	);
+	oamSet(
+		&oamMain, 2,
+		185, 10,
+		1, 0,
+		SpriteSize_64x64,
+		SpriteColorFormat_256Color,
+		labels_r,
+		-1, false, false, false, false, false
+	);
+	
+	oamUpdate(&oamMain);
 }
 
 int arra_m = 2;
