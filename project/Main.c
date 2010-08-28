@@ -28,27 +28,47 @@ int main()
 	// Main loop
 	u32 t = 0;
 	u32 t_switch = 0;
-	u8 effect = 0;
+	u8 effect = 2;
 	u8 result = 0;
-	effect2_init();
-	effect2_update( t );
+	effect1_init();
+	effect1_update( t );
+	effect3_init();
 	while( 1 ) {
 		t++;
 		t_switch++;
 		switch( effect ) {
 			// Single effect
 			case 0:
-				result = effect2_update( t );
-/*				if( result != 0 ) {
+				result = effect1_update( t );
+				if( result != 0 ) {
 					t = 0;
 					effect++;
-					effect1_init();
-					effect1_update( t );
-					effect2_destroy();
-				}*/
+					effect1_destroy();
+					effect2_init();
+					effect2_update( t );
+				}
 			break;
 
 			case 1:
+				result = effect2_update( t );
+				if( result != 0 ) {
+					t = 0;
+					effect++;
+					effect2_destroy();
+					effect3_init();
+					effect3_update( t );
+				}
+			break;
+
+			case 2:
+				result = effect3_update( t );
+// 				if( result != 0 ) {
+// 					t = 0;
+// 					effect++;
+// 					effect2_init();
+// 					effect2_update( t );
+// 					effect1_destroy();
+// 				}
 			break;
 
 			default:
