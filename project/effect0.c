@@ -132,7 +132,7 @@ u8 effect0_update( u32 t ) {
 		SUB_BLEND_Y = (t-605)/5;
 	}
 
-	if( t == 730 ) {
+	if( t == 720 ) {
 		return 1;
 	}
 	

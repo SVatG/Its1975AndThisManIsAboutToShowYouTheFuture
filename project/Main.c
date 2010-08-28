@@ -106,21 +106,25 @@ int main()
 				if( result != 0 ) {
 					t = 0;
 					effect++;
-					effect4_destroy();
-					effect4_init();
-					effect4_update( t );
+					effect5_destroy();
+					effect6_init();
+					effect6_update( t );
+				}
+			break;
+
+			case 6:
+				result = effect6_update( t );
+				if( result != 0 ) {
+					t = 0;
+					effect++;
+					effect6_destroy();
+					effect7_init();
+					effect7_update( t );
 				}
 			break;
 
 			case 7:
-				result = effect7_update( t );
-// 				if( result != 0 ) {
-// 					t = 0;
-// 					effect++;
-// 					effect4_destroy();
-// 					effect4_init();
-// 					effect4_update( t );
-// 				}
+				effect7_update( t );
 			break;
 			
 			default:

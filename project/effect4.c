@@ -3,6 +3,10 @@
 
 int prevtext5;
 void effect4_init() {
+
+	u16* master_bright = (u16*)(0x400006C);
+	memset( master_bright, (1<<6) | 0, 2 );
+		
 	prevtext5 = -1;
 
 	DISPCNT_B = DISPCNT_MODE_5 | DISPCNT_BG2_ON | DISPCNT_ON;
