@@ -267,6 +267,13 @@ u8 effect1_update( u32 t ) {
 		memset( master_bright, (1<<6) | 0, 2 );
 		memset( master_bright_sub, (1<<6) | 0, 2 );
 	}
+
+	if( t >= 714 ) {
+		u16* master_bright_sub = (u16*)(0x400106C);
+		u16* master_bright = (u16*)(0x400006C);
+		memset( master_bright, (1<<6) | (t-714), 2 );
+		memset( master_bright_sub, (1<<6) | (t-714), 2 );
+	}
 	
 	return( 0 );
 }

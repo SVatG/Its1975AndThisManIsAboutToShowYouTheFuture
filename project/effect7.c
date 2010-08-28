@@ -24,7 +24,9 @@ uint16_t vnext() {
 }
 
 void effect7_init() {
-		
+	u16* master_bright = (u16*)(0x400006C);
+	memset( master_bright, (1<<6) | 16, 2 );
+	
 	DISPCNT_B = DISPCNT_MODE_5 | DISPCNT_BG2_ON | DISPCNT_ON;
 	VRAMCNT_C = VRAMCNT_C_BG_VRAM_B;
 
@@ -80,7 +82,6 @@ void effect7_init() {
 		int c=(hnext())&0x1f;
 		PALRAM_A[i]=0x8000|(c<<10)|(c<<5)|c;
 	}
-
 }
 
 u8 effect7_update( u32 t ) {
@@ -94,7 +95,7 @@ u8 effect7_update( u32 t ) {
 			}
 		}
 	}
-	if( t == 720 ) {
+	if( t == 690 ) {
 		VRAMCNT_A=VRAMCNT_A_BG_VRAM_A;
 		VRAMCNT_C=VRAMCNT_C_BG_VRAM_B;
 
@@ -157,7 +158,39 @@ u8 effect7_update( u32 t ) {
 		int c=(hnext())&0x1f;
 		PALRAM_A[i]=0x8000|(c<<10)|(c<<5)|c;
 	}
-		
+
+	if( t < 360 ) {
+		if( t % 22 == 0 || t % 23 == 0 ) {
+			u16* master_bright_sub = (u16*)(0x400106C);
+			memset( master_bright_sub, (1<<6) | 8, 2 );
+		}
+		else {
+			u16* master_bright_sub = (u16*)(0x400106C);
+			memset( master_bright_sub, (1<<6) | 0, 2 );
+		}
+	}
+	else {
+		u16* master_bright_sub = (u16*)(0x400106C);
+		memset( master_bright_sub, (1<<6) | 0, 2 );
+	}
+
+	if( t >= 344 && t <= 360 ) {
+		u16* master_bright = (u16*)(0x400006C);
+		memset( master_bright, (1<<7) | (t-344), 2 );
+	}
+
+	if( t >= 360 && t <= 374 ) {
+		u16* master_bright = (u16*)(0x400006C);
+		memset( master_bright, (1<<7) | (374-t), 2 );
+	}
+
+	if( t <= 16 ) {
+		u16* master_bright = (u16*)(0x400006C);
+		memset( master_bright, (1<<6) | (16-t), 2 );
+		u16* master_bright_sub = (u16*)(0x400106C);
+		memset( master_bright_sub, (1<<6) | (16-t), 2 );
+	}
+	
 	return( 0 );
 }
 

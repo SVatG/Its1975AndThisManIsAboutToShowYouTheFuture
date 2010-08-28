@@ -105,7 +105,7 @@ int fy = 0;
 int fs = 0;
 u8 effect5_update( u32 t ) {
 	int text;
-	text = (t / 30) % 6;
+	text = (t / 16) % 6;
 	if( text != prevtext ) {
 		prevtext = text;
 		loadText3( text );
@@ -228,6 +228,11 @@ u8 effect5_update( u32 t ) {
 
 	if( t == 260 ) {
 		return( 1 );
+	}
+
+	if( t >= 244 ) {
+		u16* master_bright = (u16*)(0x400006C);
+		memset( master_bright, (1<<6) | (t-244), 2 );
 	}
 	
 	return( 0 );

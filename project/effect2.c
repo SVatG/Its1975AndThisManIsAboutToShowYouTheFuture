@@ -26,7 +26,9 @@ void effect2_init() {
 	BG3PD_B=0x100;
 	BG3HOFS_B=0;
 	BG3VOFS_B=0;
-
+	BG3X_B = 0;
+	BG3Y_B = 0;
+	
 	VRAMCNT_A=VRAMCNT_A_LCDC;
 	VRAMCNT_B=VRAMCNT_B_LCDC;
 	VRAMCNT_C=VRAMCNT_C_BG_VRAM_B;
@@ -308,6 +310,11 @@ u8 effect2_update( u32 t ) {
 	if( t == 720 ) {
 		return( 1 );
 	}
+
+	u16* master_bright_sub = (u16*)(0x400106C);
+	u16* master_bright = (u16*)(0x400006C);
+	memset( master_bright, (1<<6) | 0, 2 );
+	memset( master_bright_sub, (1<<6) | 0, 2 );
 	
 	return 0;
 }
