@@ -73,7 +73,19 @@ void effect6_init() {
 	RefreshVoxelBlock(&block);*/
 }
 
+int prob=12;
+
 u8 effect6_update( u32 t ) {
+	int dx=icos(t*8)>>4;
+	int dy=isin(t*8)>>4;
+
+	BG3PA_B=dx;
+	BG3PB_B=dy;
+	BG3PC_B=-dy;
+	BG3PD_B=dx;
+	BG3X_B=-128*dx-92*dy+(128<<8);
+	BG3Y_B=+128*dy-92*dx+(92<<8);
+
 	DSMatrixMode(DS_POSITION);
 	DSLoadIdentity();
 
@@ -81,13 +93,23 @@ u8 effect6_update( u32 t ) {
 	{
 		ScrollVoxelBlockByZ(&block);
 
+		prob=10*(isin(t*16)+DSf32(1))+DSf32(2);
+		prob>>=12;
+
+/*		prob+=Random()%5-2;
+		if(prob<3) prob=3;
+		if(prob>15) prob=15;*/
+
 		for(int x=0;x<8;x++)
 		for(int y=0;y<8;y++)
 		{
-			if(Random()%128==0)
-			SetVoxelAt(&block,x,y,0,MakeVoxel(27,7,15));
-			else if(Random()%12==0)
-			SetVoxelAt(&block,x,y,0,MakeVoxel(31,31,31));
+			if(Random()%prob==0)
+			{
+				if(Random()%10==0)
+				SetVoxelAt(&block,x,y,0,MakeVoxel(27,7,15));
+				else
+				SetVoxelAt(&block,x,y,0,MakeVoxel(31,31,31));
+			}
 			else
 			SetVoxelAt(&block,x,y,0,0);
 		}
@@ -96,7 +118,7 @@ u8 effect6_update( u32 t ) {
 	}
 
 	DSTranslatef(0,0,-64);
-	DSRotateYi(512-64);
+	DSRotateYi(512);
 	DSRotateXi(256+64);
 	DSRotateZi(256);
 	DSScalef(8,8,8);
