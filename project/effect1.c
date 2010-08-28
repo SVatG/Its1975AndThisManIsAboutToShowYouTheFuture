@@ -47,6 +47,9 @@ void hblank() {
 	colpos = (colpos + 1) % 256;
 }
 
+u16* arr_a;
+u16* arr_b;
+u16* arr_c;
 void effect1_init() {
 	irqSet( IRQ_HBLANK, hblank );
 	irqEnable( IRQ_HBLANK );
@@ -119,6 +122,9 @@ void effect1_init() {
 	loadVRAMIndirect("nitro:/gfx/labels_l.pal.bin", SPRITE_PALETTE, 512);
 	u16* labels_l = loadSpriteA( "nitro:/gfx/labels_l.img.bin" );
 	u16* labels_r = loadSpriteA( "nitro:/gfx/labels_r.img.bin" );
+	arr_a = loadSprite32A( "nitro:/gfx/arrow_a.img.bin" );
+	arr_b = loadSprite32A( "nitro:/gfx/arrow_b.img.bin" );
+	arr_c = loadSprite32A( "nitro:/gfx/arrow_c.img.bin" );
 	
 	oamSet(
 		&oamMain, 1,
@@ -138,8 +144,6 @@ void effect1_init() {
 		labels_r,
 		-1, false, false, false, false, false
 	);
-	
-	oamUpdate(&oamMain);
 }
 
 int arra_m = 2;
@@ -206,6 +210,36 @@ void drawbars() {
 	for( int y = 192; y > 0; y-- ) {
 		dmaCopy( &bg[(y-1)*256], &bg[y*256], 512 );
 	}
+
+	oamSet(
+		&oamMain, 3,
+		arra_s*0.5, arra_s*0.6+20,
+		1, 0,
+		SpriteSize_32x32,
+		SpriteColorFormat_256Color,
+		arr_a,
+		-1, false, false, false, false, false
+	);
+	oamSet(
+		&oamMain, 4,
+		arrb_s*0.5, arrb_s*0.6+20,
+		1, 0,
+		SpriteSize_32x32,
+		SpriteColorFormat_256Color,
+		arr_b,
+		-1, false, false, false, false, false
+	);
+	oamSet(
+		&oamMain, 5,
+		arrc_s*0.5, arrc_s*0.6+20,
+		1, 0,
+		SpriteSize_32x32,
+		SpriteColorFormat_256Color,
+		arr_c,
+		-1, false, false, false, false, false
+	);
+
+	oamUpdate(&oamMain);
 }
 
 u8 effect1_update( u32 t ) {

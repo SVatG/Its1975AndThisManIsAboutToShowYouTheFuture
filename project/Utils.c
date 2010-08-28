@@ -260,3 +260,8 @@ u16* loadSpriteB( char* path ) {
 	load8bVRAMIndirect( path, newSprite, 64*64*2 );
 	return( newSprite );
 }
+u16* loadSprite32A( char* path ) {
+	u16* newSprite = oamAllocateGfx(&oamMain, SpriteSize_32x32, SpriteColorFormat_256Color);
+	load8bVRAMIndirect( path, newSprite, 32*32*2 );
+	return( newSprite );
+}
