@@ -7,5 +7,6 @@
 #include "effect3.h"
 #include "effect4.h"
 #include "effect5.h"
+#include "effect6.h"
 
 #endif

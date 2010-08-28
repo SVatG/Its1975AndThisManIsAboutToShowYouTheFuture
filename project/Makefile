@@ -3,7 +3,7 @@ NAME = its1975andthismanisabouttoshowyouthefuture
 
 # Object files, for the ARM9 binary and the ARM7 binary
 OBJS = Main.o DS3D.o Utils.o nitrofs.o effect0.o effect1.o effect2.o effect3.o \
-effect4.o effect5.o
+effect4.o effect5.o effect6.o VoxelBlock.o DS3Dextra.o
 
 OBJS7 = Main.arm7.o
 
@@ -26,7 +26,7 @@ BITMAPS = gfx/online.bin gfx/hand.bin gfx/useful.bin \
 	gfx/prog1.bin gfx/prog2.bin gfx/prog3.bin gfx/prog4.bin gfx/prog5.bin gfx/prog6.bin \
 	gfx/greets_brs.bin gfx/greets_chm.bin gfx/greets_hg.bin gfx/greets_k2.bin \
 	gfx/greets_mod.bin gfx/greets_nectarine.bin gfx/greets_rno.bin \
-	gfx/empty.bin
+	gfx/empty.bin gfx/namakubi.bin
 
 # Compiler setup
 CC = $(DEVKITARM)/bin/arm-eabi-gcc

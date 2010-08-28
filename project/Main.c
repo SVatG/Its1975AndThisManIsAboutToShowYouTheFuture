@@ -38,8 +38,8 @@ int main()
 	u32 t_switch = 0;
 	u8 effect = 0;
 	u8 result = 0;
-	effect0_init();
-	effect0_update( t );
+	effect6_init();
+	effect6_update( t );
 
 	while( 1 ) {
 		t++;
@@ -47,11 +47,11 @@ int main()
 		switch( effect ) {
 			// Single effect
 			case 0:
-				result = effect0_update( t );
+				result = effect6_update( t );
 				if( result != 0 ) {
 					t = 0;
 					effect++;
-					effect0_destroy();
+					effect6_destroy();
 					effect1_init();
 					effect1_update( t );
 				}
