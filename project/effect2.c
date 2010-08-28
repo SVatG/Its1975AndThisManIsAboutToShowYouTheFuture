@@ -7,8 +7,8 @@ static uint32_t whitetexture;
 void effect2_init() {
 	VRAMCNT_A=VRAMCNT_A_LCDC;
 	VRAMCNT_B=VRAMCNT_B_LCDC;
-	VRAMCNT_C=VRAMCNT_C_BG_VRAM_A_OFFS_0K;
-	VRAMCNT_D=VRAMCNT_D_BG_VRAM_B_OFFS_0K;
+	VRAMCNT_C=VRAMCNT_C_BG_VRAM_B;
+	VRAMCNT_D=VRAMCNT_D_BG_VRAM_A_OFFS_0K;
 
 	DISPCNT_A=DISPCNT_MODE_4|DISPCNT_3D|DISPCNT_BG0_ON|DISPCNT_BG3_ON|DISPCNT_ON;
 	BG0CNT_A=BGxCNT_PRIORITY_2;
@@ -26,7 +26,7 @@ void effect2_init() {
 			|BGxCNT_BITMAP_SIZE_256x256|BGxCNT_PRIORITY_1;
 	BG3PA_B=0x100;
 	BG3PB_B=0;
-	BG3PC_b=0;
+	BG3PC_B=0;
 	BG3PD_B=0x100;
 	BG3HOFS_B=0;
 	BG3VOFS_B=0;
@@ -62,30 +62,30 @@ void LoadOverlay(int n)
 	switch(n)
 	{
 		case 1:
-			load8bVRAMIndirect( "nitro:/gfx/bolder1.img.bin",VRAM_A,256*192*2);
+			load8bVRAMIndirect( "nitro:/gfx/bolder1.img.bin",VRAM_A,256*192);
 			loadVRAMIndirect( "nitro:/gfx/bolder1.pal.bin", PALRAM_A,256*2);
-			load8bVRAMIndirect( "nitro:/gfx/onlinedb1.img.bin",VRAM_B,256*192*2);
+			load8bVRAMIndirect( "nitro:/gfx/onlinedb1.img.bin",VRAM_B,256*192);
 			loadVRAMIndirect( "nitro:/gfx/onlinedb1.pal.bin", PALRAM_B,256*2);
 		break;
 
 		case 2:
-			load8bVRAMIndirect( "nitro:/gfx/bolder2.img.bin",VRAM_A,256*192*2);
+			load8bVRAMIndirect( "nitro:/gfx/bolder2.img.bin",VRAM_A,256*192);
 			loadVRAMIndirect( "nitro:/gfx/bolder2.pal.bin", PALRAM_A,256*2);
-			load8bVRAMIndirect( "nitro:/gfx/onlinedb2.img.bin",VRAM_B,256*192*2);
+			load8bVRAMIndirect( "nitro:/gfx/onlinedb2.img.bin",VRAM_B,256*192);
 			loadVRAMIndirect( "nitro:/gfx/onlinedb2.pal.bin", PALRAM_B,256*2);
 		break;
 
 		case 3:
-			load8bVRAMIndirect( "nitro:/gfx/bolder3.img.bin",VRAM_A,256*192*2);
+			load8bVRAMIndirect( "nitro:/gfx/bolder3.img.bin",VRAM_A,256*192);
 			loadVRAMIndirect( "nitro:/gfx/bolder3.pal.bin", PALRAM_A,256*2);
-			load8bVRAMIndirect( "nitro:/gfx/onlinedb3.img.bin",VRAM_B,256*192*2);
+			load8bVRAMIndirect( "nitro:/gfx/onlinedb3.img.bin",VRAM_B,256*192);
 			loadVRAMIndirect( "nitro:/gfx/onlinedb3.pal.bin", PALRAM_B,256*2);
 		break;
 
 		case 4:
-			load8bVRAMIndirect( "nitro:/gfx/bolder4.img.bin",VRAM_A,256*192*2);
+			load8bVRAMIndirect( "nitro:/gfx/bolder4.img.bin",VRAM_A,256*192);
 			loadVRAMIndirect( "nitro:/gfx/bolder4.pal.bin", PALRAM_A,256*2);
-			load8bVRAMIndirect( "nitro:/gfx/onlinedb4.img.bin",VRAM_B,256*192*2);
+			load8bVRAMIndirect( "nitro:/gfx/onlinedb4.img.bin",VRAM_B,256*192);
 			loadVRAMIndirect( "nitro:/gfx/onlinedb4.pal.bin", PALRAM_B,256*2);
 		break;
 	}
