@@ -5,22 +5,18 @@ static int flip;
 static uint32_t whitetexture;
 
 void effect2_init() {
-	VRAMCNT_A=VRAMCNT_A_LCDC;
-	VRAMCNT_B=VRAMCNT_B_LCDC;
-	VRAMCNT_C=VRAMCNT_C_BG_VRAM_B;
-	VRAMCNT_D=VRAMCNT_D_BG_VRAM_A_OFFS_0K;
-
 	DISPCNT_A=DISPCNT_MODE_4|DISPCNT_3D|DISPCNT_BG0_ON|DISPCNT_BG3_ON|DISPCNT_ON;
 	BG0CNT_A=BGxCNT_PRIORITY_2;
-	BG3CNT_A=BGxCNT_BITMAP_BASE_0K|BGxCNT_EXTENDED_BITMAP_8
-			|BGxCNT_BITMAP_SIZE_256x256|BGxCNT_PRIORITY_1;
-	BG3PA_A=0x100;
-	BG3PB_A=0;
-	BG3PC_A=0;
-	BG3PD_A=0x100;
-	BG3HOFS_A=0;
-	BG3VOFS_A=0;
 
+	BG3CNT_A = BGxCNT_EXTENDED_BITMAP_8 | BGxCNT_BITMAP_SIZE_256x256 | BGxCNT_OVERFLOW_WRAP | BGxCNT_BITMAP_BASE_0K;
+	BG3CNT_A = (BG3CNT_A&~BGxCNT_PRIORITY_MASK)|BGxCNT_PRIORITY_1;
+	BG3PA_A = (1 << 8);
+	BG3PB_A = 0;
+	BG3PC_A = 0;
+	BG3PD_A = (1 << 8);
+	BG3X_A = 0;
+	BG3Y_A = 0;
+	
 	DISPCNT_B=DISPCNT_MODE_4|DISPCNT_BG3_ON|DISPCNT_ON;
 	BG3CNT_B=BGxCNT_BITMAP_BASE_0K|BGxCNT_EXTENDED_BITMAP_8
 			|BGxCNT_BITMAP_SIZE_256x256|BGxCNT_PRIORITY_1;
@@ -31,6 +27,11 @@ void effect2_init() {
 	BG3HOFS_B=0;
 	BG3VOFS_B=0;
 
+	VRAMCNT_A=VRAMCNT_A_LCDC;
+	VRAMCNT_B=VRAMCNT_B_LCDC;
+	VRAMCNT_C=VRAMCNT_C_BG_VRAM_B;
+	VRAMCNT_D=VRAMCNT_D_BG_VRAM_A_OFFS_0K;
+	
 	DSInit3D();
 	DSViewport(0,0,255,191);
 
@@ -69,24 +70,33 @@ void LoadOverlay(int n)
 		break;
 
 		case 2:
-			load8bVRAMIndirect( "nitro:/gfx/bolder2.img.bin",VRAM_A,256*192);
-			loadVRAMIndirect( "nitro:/gfx/bolder2.pal.bin", PALRAM_A,256*2);
 			load8bVRAMIndirect( "nitro:/gfx/onlinedb2.img.bin",VRAM_B,256*192);
 			loadVRAMIndirect( "nitro:/gfx/onlinedb2.pal.bin", PALRAM_B,256*2);
 		break;
 
 		case 3:
-			load8bVRAMIndirect( "nitro:/gfx/bolder3.img.bin",VRAM_A,256*192);
-			loadVRAMIndirect( "nitro:/gfx/bolder3.pal.bin", PALRAM_A,256*2);
+			load8bVRAMIndirect( "nitro:/gfx/bolder2.img.bin",VRAM_A,256*192);
+			loadVRAMIndirect( "nitro:/gfx/bolder2.pal.bin", PALRAM_A,256*2);
+		break;
+
+		case 4:
 			load8bVRAMIndirect( "nitro:/gfx/onlinedb3.img.bin",VRAM_B,256*192);
 			loadVRAMIndirect( "nitro:/gfx/onlinedb3.pal.bin", PALRAM_B,256*2);
 		break;
 
-		case 4:
-			load8bVRAMIndirect( "nitro:/gfx/bolder4.img.bin",VRAM_A,256*192);
-			loadVRAMIndirect( "nitro:/gfx/bolder4.pal.bin", PALRAM_A,256*2);
+		case 5:
+			load8bVRAMIndirect( "nitro:/gfx/bolder3.img.bin",VRAM_A,256*192);
+			loadVRAMIndirect( "nitro:/gfx/bolder3.pal.bin", PALRAM_A,256*2);
+		break;
+		
+		case 6:
 			load8bVRAMIndirect( "nitro:/gfx/onlinedb4.img.bin",VRAM_B,256*192);
 			loadVRAMIndirect( "nitro:/gfx/onlinedb4.pal.bin", PALRAM_B,256*2);
+		break;
+
+		case 7:
+			load8bVRAMIndirect( "nitro:/gfx/bolder4.img.bin",VRAM_A,256*192);
+			loadVRAMIndirect( "nitro:/gfx/bolder4.pal.bin", PALRAM_A,256*2);
 		break;
 	}
 }
@@ -96,11 +106,14 @@ static int type=1;
 u8 effect2_update( u32 t ) {
 	int capsrc;
 
-	if(t==0) LoadOverlay(type=1);
-	else if(t==180) LoadOverlay(type=2);
-	else if(t==180*2) LoadOverlay(type=3);
-	else if(t==180*3) LoadOverlay(type=4);
-
+	if(t==0) { LoadOverlay(1); type = 1; }
+	else if(t==90) { LoadOverlay(type=2); }
+	else if(t==90*2) { LoadOverlay(type=3); type = 2; }
+	else if(t==90*3) { LoadOverlay(type=4); }
+	else if(t==90*4) { LoadOverlay(type=5); type = 3; }
+	else if(t==90*5) { LoadOverlay(type=6); }
+	else if(t==90*6) { LoadOverlay(type=7); type = 4; }
+	
 /*	uint16_t *ptr;
 	if(flip) ptr=VRAM_LCDC_A;
 	else ptr=VRAM_LCDC_B;
@@ -292,6 +305,10 @@ u8 effect2_update( u32 t ) {
 
 	DSSwapBuffers(DS_SWAP_NO_SORTING);
 
+	if( t == 720 ) {
+		return( 1 );
+	}
+	
 	return 0;
 }
 

@@ -111,7 +111,7 @@ void effect1_init() {
 				bg[y*256+x] = RGB15(0,0,0) | BIT(15);
 			}
 			else {
-				bg[y*256+x] = RGB15(28,28,28) | BIT(15);
+				bg[y*256+x] = RGB15(30,30,30) | BIT(15);
 			}
 		}
 	}
@@ -160,6 +160,8 @@ void drawbars() {
 	arrb_s += arrb_m;
 	arrc_s += arrc_m;
 
+	int bnd = 128;
+	
 	if( arra_m == 2 ) {
 		if( arra_s > 128 + Random()%128 ) {
 			arra_m = -2;
@@ -249,8 +251,10 @@ u8 effect1_update( u32 t ) {
 
 	drawbars();
 	drawbars();	
-	
-	swiWaitForVBlank();
+
+	if( t == 710 ) {
+		return 1;
+	}
 	return( 0 );
 }
 

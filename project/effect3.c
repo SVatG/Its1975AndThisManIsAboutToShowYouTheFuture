@@ -179,11 +179,11 @@ void effect3_init() {
 	BLEND_CR = BLEND_ALPHA | BLEND_SRC_BG2 | BLEND_DST_BG3;
 	BLEND_AB = 0x0E | (0x0F << 8);
 
-	DISPCNT_B = DISPCNT_MODE_5 | DISPCNT_BG3_ON | DISPCNT_ON;
+	DISPCNT_B = DISPCNT_MODE_5 | DISPCNT_BG3_ON | DISPCNT_BG2_ON | DISPCNT_ON;
 	VRAMCNT_C = VRAMCNT_C_BG_VRAM_B;
 
 	BG2CNT_B = BGxCNT_EXTENDED_BITMAP_8 | BGxCNT_BITMAP_SIZE_256x256 | BGxCNT_OVERFLOW_WRAP | BGxCNT_SCREEN_BASE(0);
-	BG2CNT_B = (BG2CNT_B&~BGxCNT_PRIORITY_MASK)|BGxCNT_PRIORITY_1;
+	BG2CNT_B = (BG2CNT_B&~BGxCNT_PRIORITY_MASK)|BGxCNT_PRIORITY_0;
 	BG2PA_B = (1 << 8);
 	BG2PB_B = 0;
 	BG2PC_B = 0;
@@ -192,7 +192,7 @@ void effect3_init() {
 	BG2Y_B = 0;
 
 	BG3CNT_B = BGxCNT_EXTENDED_BITMAP_8 | BGxCNT_BITMAP_SIZE_256x256 | BGxCNT_OVERFLOW_WRAP | BGxCNT_BITMAP_BASE_64K;
-	BG3CNT_B = (BG3CNT_B&~BGxCNT_PRIORITY_MASK)|BGxCNT_PRIORITY_0;
+	BG3CNT_B = (BG3CNT_B&~BGxCNT_PRIORITY_MASK)|BGxCNT_PRIORITY_1;
 	BG3PA_B = (1 << 8);
 	BG3PB_B = 0;
 	BG3PC_B = 0;
@@ -203,7 +203,7 @@ void effect3_init() {
 	u16* sub_bg = (u16*)VRAM_B_OFFS_0K;
 	u16* sub_hand = (u16*)VRAM_B_OFFS_64K;
 
-// 	load8bVRAMIndirect( "nitro:/gfx/useful.img.bin", sub_bg, 256*192 );
+	load8bVRAMIndirect( "nitro:/gfx/text.img.bin", sub_bg, 256*192 );
 	load8bVRAMIndirect( "nitro:/gfx/standing.img.bin", sub_hand, 256*256 );
 	loadVRAMIndirect( "nitro:/gfx/standing.pal.bin", PALRAM_B, 256 * 2 );
 }
@@ -236,6 +236,8 @@ u8 effect3_update( u32 t ) {
 	SUB_BG3_YDY = ydy >> 3;
 	BG3X_B = 128<<8;
 	BG3Y_B = 128<<8;
+
+	BG2Y_B = -t<<11;
 	
 	RenderCube( t*3 );
 }
