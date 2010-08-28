@@ -240,6 +240,12 @@ u8 effect3_update( u32 t ) {
 	BG2Y_B = -t<<11;
 	
 	RenderCube( t*3 );
+
+	if( t == 720 ) {
+		return( 1 );
+	}
+	
+	return( 0 );
 }
 
 

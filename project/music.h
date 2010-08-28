@@ -1,0 +1,4 @@
+#define MOD_LIGHTMUSIC3_SHORT	0
+#define MSL_NSONGS	1
+#define MSL_NSAMPS	35
+#define MSL_BANKSIZE	36

@@ -2,7 +2,9 @@
 NAME = its1975andthismanisabouttoshowyouthefuture
 
 # Object files, for the ARM9 binary and the ARM7 binary
-OBJS = Main.o DS3D.o Utils.o nitrofs.o effect0.o effect1.o effect2.o effect3.o
+OBJS = Main.o DS3D.o Utils.o nitrofs.o effect0.o effect1.o effect2.o effect3.o \
+effect4.o effect5.o
+
 OBJS7 = Main.arm7.o
 
 # Libraries to link into the respective binaries
@@ -19,8 +21,12 @@ BITMAPS = gfx/online.bin gfx/hand.bin gfx/useful.bin \
 	gfx/labels_l.bin gfx/labels_r.bin gfx/arrow_a.bin gfx/arrow_b.bin \
         gfx/arrow_c.bin gfx/kugeln.bin gfx/standing.bin gfx/text.bin gfx/its.bin \
 	gfx/1975.bin gfx/and.bin gfx/thisman.bin gfx/isaboutto.bin gfx/showyou.bin \
-	gfx/thefuture.bin gfx/thismana.bin gfx/thismanb.bin
-
+	gfx/thefuture.bin gfx/thismana.bin gfx/thismanb.bin gfx/greets1.bin \
+	gfx/greets2.bin gfx/b1r.bin gfx/b2r.bin gfx/b3r.bin gfx/balpal_reduced.bin \
+	gfx/prog1.bin gfx/prog2.bin gfx/prog3.bin gfx/prog4.bin gfx/prog5.bin gfx/prog6.bin \
+	gfx/greets_brs.bin gfx/greets_chm.bin gfx/greets_hg.bin gfx/greets_k2.bin \
+	gfx/greets_mod.bin gfx/greets_nectarine.bin gfx/greets_rno.bin \
+	gfx/empty.bin
 
 # Compiler setup
 CC = $(DEVKITARM)/bin/arm-eabi-gcc

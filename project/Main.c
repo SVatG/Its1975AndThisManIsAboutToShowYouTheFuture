@@ -25,8 +25,8 @@ int main()
 	nitroFSInitAdv( BINARY_NAME );
 
 	mmInitDefault( "nitro:/zik/music.bin" );
-	mmLoad( MOD_LIGHTMUSIC3 );
-	mmStart( MOD_LIGHTMUSIC3, MM_PLAY_ONCE );
+	mmLoad( MOD_LIGHTMUSIC3_SHORT );
+	mmStart( MOD_LIGHTMUSIC3_SHORT, MM_PLAY_ONCE );
 	
 	#ifdef DEBUG
 	consoleDemoInit();
@@ -81,15 +81,37 @@ int main()
 
 			case 3:
 				result = effect3_update( t );
+				if( result != 0 ) {
+					t = 0;
+					effect++;
+					effect3_destroy();
+					effect4_init();
+					effect4_update( t );
+				}
+			break;
+
+			case 4:
+				result = effect4_update( t );
+				if( result != 0 ) {
+					t = 0;
+					effect++;
+					effect4_destroy();
+					effect5_init();
+					effect5_update( t );
+				}
+			break;
+
+			case 5:
+				result = effect5_update( t );
 // 				if( result != 0 ) {
 // 					t = 0;
 // 					effect++;
-// 					effect2_destroy();
-// 					effect3_init();
-// 					effect3_update( t );
+// 					effect4_destroy();
+// 					effect4_init();
+// 					effect4_update( t );
 // 				}
 			break;
-
+			
 			default:
 				/* Nada */
 			break;

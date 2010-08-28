@@ -107,12 +107,12 @@ u8 effect2_update( u32 t ) {
 	int capsrc;
 
 	if(t==0) { LoadOverlay(1); type = 1; }
-	else if(t==90) { LoadOverlay(type=2); }
-	else if(t==90*2) { LoadOverlay(type=3); type = 2; }
-	else if(t==90*3) { LoadOverlay(type=4); }
-	else if(t==90*4) { LoadOverlay(type=5); type = 3; }
-	else if(t==90*5) { LoadOverlay(type=6); }
-	else if(t==90*6) { LoadOverlay(type=7); type = 4; }
+	else if(t==90) { LoadOverlay(2); }
+	else if(t==90*2) { LoadOverlay(3); type = 2; }
+	else if(t==90*3) { LoadOverlay(4); }
+	else if(t==90*4) { LoadOverlay(5); type = 3; }
+	else if(t==90*5) { LoadOverlay(6); }
+	else if(t==90*6) { LoadOverlay(7); type = 4; }
 	
 /*	uint16_t *ptr;
 	if(flip) ptr=VRAM_LCDC_A;
