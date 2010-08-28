@@ -86,7 +86,7 @@ test: $(NAME).nds
 todisk: $(NAME).nds
 	/bin/rm -rf disk
 	/bin/mkdir disk
-	/usr/bin/sudo mount /dev/sdc1 disk
+	/usr/bin/sudo mount /dev/sdb1 disk
 	/usr/bin/sudo cp $(NAME).nds disk/
 	/bin/sleep 1
 	/usr/bin/sudo umount disk
