@@ -5,15 +5,10 @@ static int flip;
 static uint32_t whitetexture;
 
 void effect2_init() {
-	VRAMCNT_C=VRAMCNT_C_LCDC;
-
-	load8bVRAMIndirect( "nitro:/gfx/bolder1.img.bin",VRAM_LCDC_C,256*192*2);
-	loadVRAMIndirect( "nitro:/gfx/bolder1.pal.bin", PALRAM_A,256*2);
-
 	VRAMCNT_A=VRAMCNT_A_LCDC;
 	VRAMCNT_B=VRAMCNT_B_LCDC;
-	VRAMCNT_C=VRAMCNT_C_BG_VRAM_A_OFFS_0K;
-	VRAMCNT_D=VRAMCNT_D_LCDC;
+	VRAMCNT_C=VRAMCNT_C_BG_VRAM_B;
+	VRAMCNT_D=VRAMCNT_D_BG_VRAM_A_OFFS_0K;
 
 	DISPCNT_A=DISPCNT_MODE_4|DISPCNT_3D|DISPCNT_BG0_ON|DISPCNT_BG3_ON|DISPCNT_ON;
 	BG0CNT_A=BGxCNT_PRIORITY_2;
@@ -25,6 +20,16 @@ void effect2_init() {
 	BG3PD_A=0x100;
 	BG3HOFS_A=0;
 	BG3VOFS_A=0;
+
+	DISPCNT_B=DISPCNT_MODE_4|DISPCNT_BG3_ON|DISPCNT_ON;
+	BG3CNT_B=BGxCNT_BITMAP_BASE_0K|BGxCNT_EXTENDED_BITMAP_8
+			|BGxCNT_BITMAP_SIZE_256x256|BGxCNT_PRIORITY_1;
+	BG3PA_B=0x100;
+	BG3PB_B=0;
+	BG3PC_B=0;
+	BG3PD_B=0x100;
+	BG3HOFS_B=0;
+	BG3VOFS_B=0;
 
 	DSInit3D();
 	DSViewport(0,0,255,191);
@@ -40,6 +45,8 @@ void effect2_init() {
 
 //	DSCopyColorTexture(DS_TEX_ADDRESS(VRAM_LCDC_A+256*204),0x7fff);
 //	DSCopyColorTexture(DS_TEX_ADDRESS(VRAM_LCDC_B+256*204),0x7fff);
+memset(VRAM_LCDC_A,0x00,256*192*2);
+memset(VRAM_LCDC_B,0x00,256*192*2);
 memset(VRAM_LCDC_A+256*204,0xff,8*8*2);
 memset(VRAM_LCDC_B+256*204,0xff,8*8*2);
 	whitetexture=DS_TEX_ADDRESS(VRAM_LCDC_A+256*204);
@@ -50,8 +57,49 @@ memset(VRAM_LCDC_B+256*204,0xff,8*8*2);
 //DSScalef(100.0/4096,100.0/4096,1);
 }
 
+void LoadOverlay(int n)
+{
+	switch(n)
+	{
+		case 1:
+			load8bVRAMIndirect( "nitro:/gfx/bolder1.img.bin",VRAM_A,256*192);
+			loadVRAMIndirect( "nitro:/gfx/bolder1.pal.bin", PALRAM_A,256*2);
+			load8bVRAMIndirect( "nitro:/gfx/onlinedb1.img.bin",VRAM_B,256*192);
+			loadVRAMIndirect( "nitro:/gfx/onlinedb1.pal.bin", PALRAM_B,256*2);
+		break;
+
+		case 2:
+			load8bVRAMIndirect( "nitro:/gfx/bolder2.img.bin",VRAM_A,256*192);
+			loadVRAMIndirect( "nitro:/gfx/bolder2.pal.bin", PALRAM_A,256*2);
+			load8bVRAMIndirect( "nitro:/gfx/onlinedb2.img.bin",VRAM_B,256*192);
+			loadVRAMIndirect( "nitro:/gfx/onlinedb2.pal.bin", PALRAM_B,256*2);
+		break;
+
+		case 3:
+			load8bVRAMIndirect( "nitro:/gfx/bolder3.img.bin",VRAM_A,256*192);
+			loadVRAMIndirect( "nitro:/gfx/bolder3.pal.bin", PALRAM_A,256*2);
+			load8bVRAMIndirect( "nitro:/gfx/onlinedb3.img.bin",VRAM_B,256*192);
+			loadVRAMIndirect( "nitro:/gfx/onlinedb3.pal.bin", PALRAM_B,256*2);
+		break;
+
+		case 4:
+			load8bVRAMIndirect( "nitro:/gfx/bolder4.img.bin",VRAM_A,256*192);
+			loadVRAMIndirect( "nitro:/gfx/bolder4.pal.bin", PALRAM_A,256*2);
+			load8bVRAMIndirect( "nitro:/gfx/onlinedb4.img.bin",VRAM_B,256*192);
+			loadVRAMIndirect( "nitro:/gfx/onlinedb4.pal.bin", PALRAM_B,256*2);
+		break;
+	}
+}
+
+static int type=1;
+
 u8 effect2_update( u32 t ) {
 	int capsrc;
+
+	if(t==0) LoadOverlay(type=1);
+	else if(t==180) LoadOverlay(type=2);
+	else if(t==180*2) LoadOverlay(type=3);
+	else if(t==180*3) LoadOverlay(type=4);
 
 /*	uint16_t *ptr;
 	if(flip) ptr=VRAM_LCDC_A;
@@ -102,9 +150,44 @@ u8 effect2_update( u32 t ) {
 //		DSScalef((1-(float)i/40),(1-(float)i/40),0);
 //		DSTranslatef(-x,-y,0);
 
-		DSTranslatef(0*16,192*16,0);
-		DSRotateZi(-10*i);
-		DSTranslatef(-0*16,-192*16,0);
+		float f;
+		switch(type)
+		{
+			case 1:
+				DSTranslatef(0*16,192*16,0);
+				DSRotateZi(-10*i);
+				DSTranslatef(-0*16,-192*16,0);
+			break;
+
+			case 2:
+				f=1-(float)i/20;
+				DSTranslatef(128*16,0*16,0);
+				DSScalef(f,f,0);
+				DSTranslatef(-128*16,-0*16,0);
+			break; 
+
+			case 3:
+				f=1-(float)i/15;
+				DSTranslatef(256*16,192*16,0);
+				DSScalef(f,f,0);
+				DSTranslatef(-256*16,-192*16,0);
+			break; 
+
+			case 4:
+			{
+				f=1+(float)i/20;
+				int x=Random()%65-32;
+				int y=Random()%65-32;
+				DSTranslatef(x+128*16,y+96*16,0);
+				DSScalef(f,f,0);
+				DSTranslatef(-x-128*16,-y-96*16,0);
+
+/*				DSTranslatef(56*16,80*16,0);
+				DSRotateZi(-20*i);
+				DSTranslatef(-56*16,-80*16,0);*/
+			}
+			break; 
+		}
 
 		if(i==1)
 //		DSPolygonAttributes(DS_POLY_CULL_NONE|DS_POLY_ALPHA(16));
@@ -122,38 +205,90 @@ u8 effect2_update( u32 t ) {
 
 	DSLoadIdentity();
 
-		DSPolygonAttributes(DS_POLY_MODE_DECAL|DS_POLY_CULL_NONE|DS_POLY_ALPHA(31));
+	DSPolygonAttributes(DS_POLY_MODE_DECAL|DS_POLY_CULL_NONE|DS_POLY_ALPHA(31));
 
-		DSSetTexture(whitetexture);
+	DSSetTexture(whitetexture);
 
-		DSBegin(DS_TRIANGLES);
-		for(int i=0;i<100;i++)
-		{
-			switch(Random()%2)
+	DSBegin(DS_TRIANGLES);
+	switch(type)
+	{
+		case 1:
+			for(int i=0;i<100;i++)
 			{
-				case 0: DSColor3b(Random()%15+16,Random()%15,Random()%15); break;
-//				case 1: DSColor3b(Random()%15,Random()%15+16,Random()%15); break;
-				case 1: DSColor3b(Random()%15,Random()%15,Random()%15+16); break;
-			}
-//			DSColor(rand()&0x7fff);
+				switch(Random()%2)
+				{
+					case 0: DSColor3b(Random()%16+16,Random()%4,Random()%4); break;
+					case 1: DSColor3b(Random()%4,Random()%4,Random()%16+16); break;
+				}
 
-			int x,y;
-			if(Random()%2)
-			{
-				x=4;
-				y=Random()%192;
-			}
-			else
-			{
-				x=Random()%256;
-				y=4;
-			}
+				int x,y;
+				if(Random()%2) { x=4; y=Random()%192; }
+				else { x=Random()%256; y=4; }
 
-			DSVertex3v16(x+Random()%9-4,y+Random()%9-4,DSf32(-0.5));
-			DSVertex3v16(x+Random()%9-4,y+Random()%9-4,DSf32(-0.5));
-			DSVertex3v16(x+Random()%9-4,y+Random()%9-4,DSf32(-0.5));
-		}
-		DSEnd();
+				DSVertex3v16(x+Random()%9-4,y+Random()%9-4,DSf32(-0.5));
+				DSVertex3v16(x+Random()%9-4,y+Random()%9-4,DSf32(-0.5));
+				DSVertex3v16(x+Random()%9-4,y+Random()%9-4,DSf32(-0.5));
+			}
+		break;
+
+		case 2:
+			for(int i=0;i<100;i++)
+			{
+				switch(Random()%2)
+				{
+					case 0: DSColor3b(Random()%16+16,Random()%4,Random()%4); break;
+					case 1: DSColor3b(Random()%4,Random()%16+16,Random()%4); break;
+				}
+
+				int rx=rand()%257-128;
+				DSVertex3v16(rx+Random()%33-16+128-10,Random()%16,DSf32(-0.5));
+				DSVertex3v16(rx+Random()%33-16+128-10,Random()%16,DSf32(-0.5));
+				DSVertex3v16(rx+Random()%33-16+128-10,Random()%16,DSf32(-0.5));
+			}
+		break;
+
+		case 3:
+			for(int i=0;i<100;i++)
+			{
+				switch(Random()%2)
+				{
+					case 0: DSColor3b(Random()%4,Random()%4,Random()%16+16); break;
+					case 1: DSColor3b(Random()%4,Random()%16+16,Random()%4); break;
+				}
+
+				DSVertex3v16(Random()%33-32+256,Random()%33-32+192,DSf32(-0.5));
+				DSVertex3v16(Random()%33-32+256,Random()%33-32+192,DSf32(-0.5));
+				DSVertex3v16(Random()%33-32+256,Random()%33-32+192,DSf32(-0.5));
+			}
+		break;
+
+		case 4:
+			for(int i=0;i<400;i++)
+			{
+				switch(Random()%3)
+				{
+					case 0: DSColor3b(Random()%4,Random()%4,Random()%16+16); break;
+					case 1: DSColor3b(Random()%4,Random()%16+16,Random()%4); break;
+					case 2: DSColor3b(Random()%16+16,Random()%4,Random()%4); break;
+				}
+
+				int x,y;
+				switch(Random()%4)
+				{
+					case 0: x=4; y=Random()%192; break;
+					case 1: x=251; y=Random()%192; break;
+					case 2: y=4; x=Random()%256; break;
+					case 3: y=187; x=Random()%256; break;
+				}
+
+				DSVertex3v16(x+Random()%9-4,y+Random()%9-4,DSf32(-0.5));
+				DSVertex3v16(x+Random()%9-4,y+Random()%9-4,DSf32(-0.5));
+				DSVertex3v16(x+Random()%9-4,y+Random()%9-4,DSf32(-0.5));
+			}
+		break;
+	}
+
+	DSEnd();
 
 	DSSwapBuffers(DS_SWAP_NO_SORTING);
 
