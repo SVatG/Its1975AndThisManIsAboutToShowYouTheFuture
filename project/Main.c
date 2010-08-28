@@ -48,6 +48,9 @@ int main()
 				}
 			break;
 
+			case 1:
+			break;
+
 			default:
 				/* Nada */
 			break;
