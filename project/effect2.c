@@ -9,15 +9,17 @@ static int fadestart;
 void effect2_init() {
 	VRAMCNT_C=VRAMCNT_C_LCDC;
 
-	//load8bVRAMIndirect( "nitro:/gfx/bolder1.img.bin",VRAM_LCDC_C,256*192 );
-	//loadVRAMIndirect( "nitro:/gfx/bolder1.pal.bin", PALRAM_A, 256 * 2 );
+//	load8bVRAMIndirect( "nitro:/gfx/bolder1.img.bin",VRAM_LCDC_C,256*192*2);
+//	loadVRAMIndirect( "nitro:/gfx/bolder1.pal.bin", PALRAM_A,256*2);
+for(int i=0;i<256*192;i++) VRAM_LCDC_C[i]=Random();
+for(int i=0;i<256;i++) PALRAM_A[i]=Random();
 
 	VRAMCNT_A=VRAMCNT_A_LCDC;
 	VRAMCNT_B=VRAMCNT_B_LCDC;
 	VRAMCNT_C=VRAMCNT_C_BG_VRAM_A_OFFS_0K;
 	VRAMCNT_D=VRAMCNT_D_LCDC;
 
-	DISPCNT_A=DISPCNT_MODE_4|DISPCNT_3D|DISPCNT_BG0_ON|/*DISPCNT_BG3_ON|*/DISPCNT_ON;
+	DISPCNT_A=DISPCNT_MODE_4|DISPCNT_3D|DISPCNT_BG0_ON|DISPCNT_BG3_ON|DISPCNT_ON;
 	BG0CNT_A=BGxCNT_PRIORITY_2;
 	BG3CNT_A=BGxCNT_BITMAP_BASE_0K|BGxCNT_EXTENDED_BITMAP_16
 			|BGxCNT_BITMAP_SIZE_256x256|BGxCNT_PRIORITY_1; // RGB bitmap mode
@@ -28,10 +30,13 @@ void effect2_init() {
 	BG3HOFS_A=0;
 	BG3VOFS_A=0;
 
+for(int i=0;i<256*192;i++) VRAM_A[i]=Random();
+for(int i=0;i<256;i++) PALRAM_A[i]=Random();
+
 	DSInit3D();
 	DSViewport(0,0,255,191);
 
-	DSSetControl(DS_TEXTURING|DS_ANTIALIAS|DS_ALPHA_BLEND);
+	DSSetControl(DS_TEXTURING|DS_ALPHA_BLEND);
 	DSClearParams(0,0,0,31,63);
 
 	for(int i=0;i<256*256;i++)
@@ -62,7 +67,6 @@ u8 effect2_update( u32 t ) {
 		ptr[256*192+i]=ptr[256*191+i];
 	}
 
-	DISPCNT_A=DISPCNT_MODE_4|DISPCNT_3D|DISPCNT_BG0_ON|/*DISPCNT_BG3_ON|*/DISPCNT_ON;
 	capsrc=DISPCAPCNT_SRC_A_3D;
 
 	if(flip)
@@ -90,23 +94,22 @@ u8 effect2_update( u32 t ) {
 
 	DSSetTexture(0|DS_TEX_SIZE_S_256|DS_TEX_SIZE_T_256|DS_TEX_FORMAT_RGB|DS_TEX_GEN_TEXCOORD);
 
-	DSColor(0x3fff);
+	DSColor(0x7fff);
 
 	DSMatrixMode(DS_TEXTURE);
 	for(int i=1;i<=2;i++)
 	{
-		int rx=rand()%127-63;
-		int ry=rand()%127-63;
-//		int x=(128+10)*16+rx,y=(96+10)*16+ry;
-		int x=(128+15)*16+rx,y=(96+15)*16+ry;
+//		int rx=rand()%127-63;
+//		int ry=rand()%127-63;
+//		int x=(0)*16+rx,y=(96+15)*16+ry;
 		DSLoadIdentity();
-		DSTranslatef(x,y,0);
-		DSScalef((1-(float)i/40),(1-(float)i/40),0);
-		DSTranslatef(-x,-y,0);
+//		DSTranslatef(x,y,0);
+//		DSScalef((1-(float)i/40),(1-(float)i/40),0);
+//		DSTranslatef(-x,-y,0);
 
-		DSTranslatef(128*16,96*16,0);
-		DSRotateZi(5*i*isin(3*t/2+128)>>12);
-		DSTranslatef(-128*16,-96*16,0);
+		DSTranslatef(0*16,192*16,0);
+		DSRotateZi(-10*i);
+		DSTranslatef(-0*16,-192*16,0);
 
 		if(i==1)
 //		DSPolygonAttributes(DS_POLY_CULL_NONE|DS_POLY_ALPHA(16));
@@ -124,27 +127,38 @@ u8 effect2_update( u32 t ) {
 
 	DSLoadIdentity();
 
+		DSPolygonAttributes(DS_POLY_MODE_DECAL|DS_POLY_CULL_NONE|DS_POLY_ALPHA(31));
 
+		DSSetTexture(whitetexture);
 
-	DSPolygonAttributes(DS_POLY_MODE_DECAL|DS_POLY_CULL_NONE|DS_POLY_ALPHA(31));
-
-	DSSetTexture(whitetexture);
-
-	DSBegin(DS_TRIANGLES);
-	for(int i=0;i<10;i++)
-	{
-		switch(rand()%2)
+		DSBegin(DS_TRIANGLES);
+		for(int i=0;i<100;i++)
 		{
-			case 0: DSColor3b(rand()%15+16,rand()%15,rand()%15); break;
-//			case 1: DSColor3b(rand()%15,rand()%15+16,rand()%15); break;
-			case 1: DSColor3b(rand()%15,rand()%15,rand()%15+16); break;
+			switch(Random()%2)
+			{
+				case 0: DSColor3b(Random()%15+16,Random()%15,Random()%15); break;
+//				case 1: DSColor3b(Random()%15,Random()%15+16,Random()%15); break;
+				case 1: DSColor3b(Random()%15,Random()%15,Random()%15+16); break;
+			}
+//			DSColor(rand()&0x7fff);
+
+			int x,y;
+			if(Random()%2)
+			{
+				x=4;
+				y=Random()%192;
+			}
+			else
+			{
+				x=Random()%256;
+				y=4;
+			}
+
+			DSVertex3v16(x+Random()%9-4,y+Random()%9-4,DSf32(-0.5));
+			DSVertex3v16(x+Random()%9-4,y+Random()%9-4,DSf32(-0.5));
+			DSVertex3v16(x+Random()%9-4,y+Random()%9-4,DSf32(-0.5));
 		}
-//		DSColor(rand()&0x7fff);
-		DSVertex3v16(rand()%32+112,rand()%32+80,DSf32(-0.5));
-		DSVertex3v16(rand()%32+112,rand()%32+80,DSf32(-0.5));
-		DSVertex3v16(rand()%32+112,rand()%32+80,DSf32(-0.5));
-	}
-	DSEnd();
+		DSEnd();
 
 	DSSwapBuffers(DS_SWAP_NO_SORTING);
 
